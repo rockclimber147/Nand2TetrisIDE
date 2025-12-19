@@ -1,3 +1,12 @@
+export class SymbolKinds {
+  static readonly STATIC = "STATIC";
+  static readonly FIELD = "FIELD";
+  static readonly ARG = "ARG";
+  static readonly VAR = "VAR";
+}
+export type ClassSymbolKind = typeof SymbolKinds.STATIC | typeof SymbolKinds.FIELD
+export type FieldSymbolKind = typeof SymbolKinds.ARG | typeof SymbolKinds.VAR;
+
 export class GlobalSymbolTable {
     private classes = new Map<string, ClassLevelTable>();
     
@@ -11,23 +20,23 @@ export class GlobalSymbolTable {
     }
 }
 
-export type SymbolKind = 'STATIC' | 'FIELD' | 'ARG' | 'VAR';
 
-export interface SymbolEntry {
+
+export interface ClassSymbolEntry {
   name: string;
   type: string;
-  kind: SymbolKind;
+  kind: ClassSymbolKind;
   index: number;
 }
 
 export class ClassLevelTable {
-  private vars = new Map<string, SymbolEntry>();
+  private vars = new Map<string, ClassSymbolEntry>();
   private subroutines = new Map<string, SubroutineLevelTable>();
-  private counts: Record<'STATIC' | 'FIELD', number> = { STATIC: 0, FIELD: 0 };
+  private counts: Record<ClassSymbolKind, number> = { STATIC: 0, FIELD: 0 };
 
   constructor(public readonly className: string) {}
 
-  public defineVar(name: string, type: string, kind: 'STATIC' | 'FIELD'): void {
+  public defineVar(name: string, type: string, kind: ClassSymbolKind): void {
     if (this.vars.has(name)) {
       throw new Error(`Identifier '${name}' is already defined in class scope.`);
     }
@@ -49,11 +58,17 @@ export class ClassLevelTable {
     return table;
   }
 
-  public lookup(name: string): SymbolEntry | undefined {
+  public lookup(name: string): ClassSymbolEntry | undefined {
+    if (!this.vars.has(name)) {
+      throw new Error(`Var ${name} does not exist in class ${this.className}`)
+    }
     return this.vars.get(name);
   }
 
   public getSubroutine(name: string): SubroutineLevelTable | undefined {
+    if (!this.vars.has(name)) {
+      throw new Error(`Method/Function ${name} does not exist in class ${this.className}`)
+    }
     return this.subroutines.get(name);
   }
 }

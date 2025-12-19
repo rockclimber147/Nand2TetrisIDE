@@ -8,7 +8,7 @@ export interface JackClassNode extends ASTNode {
   subroutines: JackSubroutineNode[];
 }
 
-export type ClassVarKind = typeof JackSpec.STATIC | typeof JackSpec.FIELD | typeof JackSpec.VAR;
+export type ClassVarKind = typeof JackSpec.STATIC | typeof JackSpec.FIELD;
 export interface JackClassVarDecNode extends ASTNode {
   kind: ASTNodeKind.VAR_DEC;
   varKind: ClassVarKind;
