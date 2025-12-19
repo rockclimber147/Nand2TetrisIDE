@@ -6,7 +6,7 @@ export const HDLSpec: [RegExp, TokenType][] = [
   [/^\/\*[\s\S]*?\*\//, TokenType.SKIP],
   [/^(CHIP|IN|OUT|PARTS|BUILTIN|CLOCKED)\b/, TokenType.KEYWORD],
   [/^(true|false)\b/, TokenType.KEYWORD],
-  [/^[{}()\[\].,;=]/, TokenType.SYMBOL],
+  [/^[{}()\[\].,;=:]/, TokenType.SYMBOL],
   [/^\d+/, TokenType.INT],
   [/^[a-zA-Z_][a-zA-Z0-9_]*/, TokenType.IDENTIFIER],
 ];
