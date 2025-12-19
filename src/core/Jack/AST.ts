@@ -80,7 +80,7 @@ export interface JackWhileStatementNode extends ASTNode {
 export interface JackDoStatementNode extends ASTNode {
   kind: ASTNodeKind.STATEMENT;
   statementType: typeof JackSpec.DO;
-  subroutineCall: JackSubroutineCall;
+  subroutineCall: JackSubroutineCallNode;
 }
 
 export interface JackReturnStatementNode extends ASTNode {
@@ -89,34 +89,65 @@ export interface JackReturnStatementNode extends ASTNode {
   expression?: JackExpressionNode;
 }
 
-export interface JackSubroutineCall {
-  target?: string;
-  name: string;
-  arguments: JackExpressionNode[];
-}
+export type JackExpressionNode =
+  | JackIntegerLiteralNode
+  | JackStringLiteralNode
+  | JackKeywordLiteralNode
+  | JackVariableTermNode
+  | JackUnaryTermNode
+  | JackSubroutineCallNode
+  | JackParenthesizedExpressionNode
+  | JackBinaryExpressionNode;
 
-export interface JackExpressionNode extends ASTNode {
+// Helper for the "term (op term)*" structure used in Jack
+export interface JackBinaryExpressionNode extends ASTNode {
   kind: ASTNodeKind.EXPRESSION;
-  term: JackTermNode;
-  nextTerms: { op: string; term: JackTermNode }[];
+  term: JackExpressionNode;
+  nextTerms: { op: string; term: JackExpressionNode }[];
 }
 
-export type JackTermType =
-  | 'INTEGER'
-  | 'STRING'
-  | 'KEYWORD'
-  | 'VAR_NAME'
-  | 'ARRAY_ACCESS'
-  | 'SUBROUTINE_CALL'
-  | 'PAREN_EXPRESSION'
-  | 'UNARY_OP';
-
-export interface JackTermNode extends ASTNode {
+export interface JackIntegerLiteralNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  termType: JackTermType;
+  type: 'INTEGER';
+  value: number;
+}
+
+export interface JackStringLiteralNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'STRING';
   value: string;
-  indexExpression?: JackExpressionNode;
-  subroutineCall?: JackSubroutineCall;
-  nestedExpression?: JackExpressionNode;
-  unaryOp?: { op: string; term: JackTermNode };
+}
+
+export interface JackKeywordLiteralNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'KEYWORD';
+  keyword: string; // true, false, null, this
+}
+
+export interface JackVariableTermNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'VAR_NAME';
+  name: string;
+  arrayIndex?: JackBinaryExpressionNode; // let x = a[i]
+}
+
+export interface JackUnaryTermNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'UNARY_OP';
+  op: string;
+  term: JackExpressionNode;
+}
+
+export interface JackParenthesizedExpressionNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'PAREN_EXPRESSION';
+  expression: JackBinaryExpressionNode;
+}
+
+export interface JackSubroutineCallNode extends ASTNode {
+  kind: ASTNodeKind.TERM;
+  type: 'SUBROUTINE_CALL';
+  target?: string;
+  methodName: string;
+  arguments: JackExpressionNode[];
 }
