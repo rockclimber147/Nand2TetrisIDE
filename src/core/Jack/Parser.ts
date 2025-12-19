@@ -11,9 +11,14 @@ import type {
   JackSubroutineBodyNode,
   SubroutineVarKind,
   JackSubroutineVarDecNode,
-  JackStatement,
+  JackStatementNode,
   JackLetStatementNode,
   JackExpressionNode,
+  JackIfStatementNode,
+  JackWhileStatementNode,
+  JackReturnStatementNode,
+  JackDoStatementNode,
+  JackSubroutineCall,
 } from './AST';
 import { ASTNodeKind } from '../Parser/AST';
 
@@ -160,7 +165,7 @@ export class JackParser extends BaseParser<JackClassNode> {
     while (this.check(TokenType.KEYWORD, JackSpec.VAR)) {
       subroutineVarDecs.push(this.parseSubroutineVarDec());
     }
-    const subroutinreStatements: JackStatement[] = [];
+    const subroutinreStatements: JackStatementNode[] = [];
     while (JackSpec.STATEMENTS.has(this.validator.peek().lexeme)) {
       subroutinreStatements.push(this.parseStatement());
     }
@@ -205,16 +210,20 @@ export class JackParser extends BaseParser<JackClassNode> {
     };
   }
 
-  private parseStatement(): JackStatement {
+  private parseStatement(): JackStatementNode {
     const token = this.validator.peek(0);
 
     switch (token.lexeme) {
       case JackSpec.LET:
         return this.parseLet();
-      // case JackSpec.IF:     return this.parseIf();
-      // case JackSpec.WHILE:  return this.parseWhile();
-      // case JackSpec.DO:     return this.parseDo();
-      // case JackSpec.RETURN: return this.parseReturn();
+      case JackSpec.IF:
+        return this.parseIf();
+      case JackSpec.WHILE:
+        return this.parseWhile();
+      case JackSpec.RETURN:
+        return this.parseReturn();
+      case JackSpec.DO:
+        return this.parseDo();
     }
     this.validator.throwCompilerError(token, 'Expected statement');
   }
@@ -243,6 +252,72 @@ export class JackParser extends BaseParser<JackClassNode> {
       valueExpression,
     };
   }
+
+  private parseIf(): JackIfStatementNode {
+    throw Error();
+  }
+
+  private parseWhile(): JackWhileStatementNode {
+    const startToken = this.validator.expectLexeme(JackSpec.WHILE);
+
+    this.validator.expectLexeme(JackSpec.L_PAREN);
+    const condition = this.parseExpression();
+    this.validator.expectLexeme(JackSpec.R_PAREN);
+
+    this.validator.expectLexeme(JackSpec.L_BRACE);
+    const statements: JackStatementNode[] = [];
+    while (!this.check(TokenType.SYMBOL, JackSpec.R_BRACE)) {
+      statements.push(this.parseStatement());
+    }
+    const endToken = this.validator.expectLexeme(JackSpec.R_BRACE);
+
+    return {
+      kind: ASTNodeKind.STATEMENT,
+      statementType: JackSpec.WHILE,
+      startToken,
+      endToken,
+      condition,
+      statements,
+    };
+  }
+
+  private parseReturn(): JackReturnStatementNode {
+    const startToken = this.validator.expectLexeme(JackSpec.RETURN);
+
+    let expression: JackExpressionNode | undefined;
+    if (!this.check(TokenType.SYMBOL, JackSpec.SEMI)) {
+      expression = this.parseExpression();
+    }
+
+    const endToken = this.validator.expectLexeme(JackSpec.SEMI);
+
+    return {
+      kind: ASTNodeKind.STATEMENT,
+      statementType: JackSpec.RETURN,
+      startToken,
+      endToken,
+      expression,
+    };
+  }
+
+  private parseDo(): JackDoStatementNode {
+    const startToken = this.validator.expectLexeme(JackSpec.DO);
+    const subroutineCall = this.parseSubroutineCall();
+    const endToken = this.validator.expectLexeme(JackSpec.SEMI);
+
+    return {
+      kind: ASTNodeKind.STATEMENT,
+      statementType: JackSpec.DO,
+      startToken: startToken,
+      subroutineCall: subroutineCall,
+      endToken: endToken,
+    };
+  }
+
+  private parseSubroutineCall(): JackSubroutineCall {
+    throw Error();
+  }
+
   private parseExpression(): JackExpressionNode {
     throw Error();
   }

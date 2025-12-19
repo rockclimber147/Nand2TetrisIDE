@@ -36,7 +36,7 @@ export interface JackParameterNode extends ASTNode {
 
 export interface JackSubroutineBodyNode extends ASTNode {
   varDecs: JackSubroutineVarDecNode[];
-  statements: JackStatement[];
+  statements: JackStatementNode[];
 }
 
 export type SubroutineVarKind = typeof JackSpec.VAR;
@@ -47,7 +47,7 @@ export interface JackSubroutineVarDecNode extends ASTNode {
   names: string[];
 }
 
-export type JackStatement =
+export type JackStatementNode =
   | JackLetStatementNode
   | JackIfStatementNode
   | JackWhileStatementNode
@@ -66,15 +66,15 @@ export interface JackIfStatementNode extends ASTNode {
   kind: ASTNodeKind.STATEMENT;
   statementType: typeof JackSpec.IF;
   condition: JackExpressionNode;
-  trueStatements: JackStatement[];
-  falseStatements?: JackStatement[]; // for the optional 'else'
+  trueStatements: JackStatementNode[];
+  falseStatements?: JackStatementNode[]; // for the optional 'else'
 }
 
 export interface JackWhileStatementNode extends ASTNode {
   kind: ASTNodeKind.STATEMENT;
   statementType: typeof JackSpec.WHILE;
   condition: JackExpressionNode;
-  statements: JackStatement[];
+  statements: JackStatementNode[];
 }
 
 export interface JackDoStatementNode extends ASTNode {
