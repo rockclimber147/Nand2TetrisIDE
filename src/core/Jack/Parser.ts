@@ -1,26 +1,25 @@
 import { BaseParser } from '../Parser/BaseParser';
 import { TokenType } from '../Token';
 import { JackSpec } from './JackSpec';
-import type {
-  JackClassNode,
-  JackClassVarDecNode,
-  ClassVarKind,
-  JackSubroutineNode,
-  SubroutineKind,
-  JackParameterNode,
-  JackSubroutineBodyNode,
-  SubroutineVarKind,
-  JackSubroutineVarDecNode,
-  JackStatementNode,
-  JackLetStatementNode,
-  JackExpressionNode,
-  JackIfStatementNode,
-  JackWhileStatementNode,
-  JackReturnStatementNode,
-  JackDoStatementNode,
-  JackSubroutineCallNode,
-  JackBinaryExpressionNode,
-  JackKeywordLiteralNode,
+import {
+  type JackClassNode,
+  type JackClassVarDecNode,
+  type ClassVarKind,
+  type JackSubroutineNode,
+  type SubroutineKind,
+  type JackParameterNode,
+  type JackSubroutineBodyNode,
+  type SubroutineVarKind,
+  type JackSubroutineVarDecNode,
+  type JackStatementNode,
+  type JackLetStatementNode,
+  type JackExpressionNode,
+  type JackIfStatementNode,
+  type JackWhileStatementNode,
+  type JackReturnStatementNode,
+  type JackDoStatementNode,
+  type JackSubroutineCallNode,
+  ExpressionNodeTypes,
 } from './AST';
 import { ASTNodeKind } from '../Parser/AST';
 
@@ -368,7 +367,7 @@ export class JackParser extends BaseParser<JackClassNode> {
 
     return {
       kind: ASTNodeKind.TERM,
-      type: 'SUBROUTINE_CALL',
+      type: ExpressionNodeTypes.SUBROUTINE_CALL,
       startToken,
       endToken,
       target,
@@ -418,7 +417,7 @@ export class JackParser extends BaseParser<JackClassNode> {
     const token = this.validator.expectOneOfLexemes(keywordConstants);
     return {
         kind: ASTNodeKind.TERM,
-        type: "KEYWORD",
+        type: ExpressionNodeTypes.KEYWORD,
         keyword: token.lexeme,
         startToken: token,
         endToken: token,

@@ -89,6 +89,7 @@ export class JackSpec {
   static readonly NULL = 'null';
   static readonly THIS = 'this';
 
+
   static readonly KEYWORDS = new Set([
     JackSpec.CLASS,
     JackSpec.CONSTRUCTOR,

@@ -99,54 +99,64 @@ export type JackExpressionNode =
   | JackParenthesizedExpressionNode
   | JackBinaryExpressionNode;
 
-// Helper for the "term (op term)*" structure used in Jack
+export class ExpressionNodeTypes {
+  static readonly INTEGER = 'INTEGER';
+  static readonly STRING = 'STRING';
+  static readonly KEYWORD = 'KEYWORD';
+  static readonly VAR_NAME = 'VAR_NAME';
+  static readonly UNARY_OP = 'UNARY_OP';
+  static readonly PAREN_EXPRESSION = 'PAREN_EXPRESSION';
+  static readonly SUBROUTINE_CALL = 'SUBROUTINE_CALL';
+  static readonly BINARY_EXPRESSION = 'BINARY_EXPRESSION';
+}
+
 export interface JackBinaryExpressionNode extends ASTNode {
   kind: ASTNodeKind.EXPRESSION;
   term: JackExpressionNode;
-  nextTerms: { op: string; term: JackExpressionNode }[];
+  nextTerms: { op: string; term: JackExpressionNode }[];  
 }
 
 export interface JackIntegerLiteralNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'INTEGER';
+  type: typeof ExpressionNodeTypes.INTEGER;
   value: number;
 }
 
 export interface JackStringLiteralNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'STRING';
+  type: typeof ExpressionNodeTypes.STRING;
   value: string;
 }
 
 export interface JackKeywordLiteralNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'KEYWORD';
+  type: typeof ExpressionNodeTypes.KEYWORD;
   keyword: string; // true, false, null, this
 }
 
 export interface JackVariableTermNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'VAR_NAME';
+  type: typeof ExpressionNodeTypes.VAR_NAME;
   name: string;
   arrayIndex?: JackBinaryExpressionNode; // let x = a[i]
 }
 
 export interface JackUnaryTermNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'UNARY_OP';
+  type: typeof ExpressionNodeTypes.UNARY_OP;
   op: string;
   term: JackExpressionNode;
 }
 
 export interface JackParenthesizedExpressionNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'PAREN_EXPRESSION';
+  type: typeof ExpressionNodeTypes.PAREN_EXPRESSION;
   expression: JackBinaryExpressionNode;
 }
 
 export interface JackSubroutineCallNode extends ASTNode {
   kind: ASTNodeKind.TERM;
-  type: 'SUBROUTINE_CALL';
+  type: typeof ExpressionNodeTypes.SUBROUTINE_CALL;
   target?: string;
   methodName: string;
   arguments: JackExpressionNode[];
