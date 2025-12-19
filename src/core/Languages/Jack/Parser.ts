@@ -166,16 +166,16 @@ export class JackParser extends BaseParser<JackClassNode> {
     while (this.check(TokenType.KEYWORD, JackSpec.VAR)) {
       subroutineVarDecs.push(this.parseSubroutineVarDec());
     }
-    const subroutinreStatements: JackStatementNode[] = [];
+    const subroutineStatements: JackStatementNode[] = [];
     while (JackSpec.STATEMENTS.has(this.validator.peek().lexeme)) {
-      subroutinreStatements.push(this.parseStatement());
+      subroutineStatements.push(this.parseStatement());
     }
     const endToken = this.validator.expectLexeme(JackSpec.R_BRACE);
     return {
       kind: ASTNodeKind.SUBROUTINE,
       startToken: startToken,
       varDecs: subroutineVarDecs,
-      statements: subroutinreStatements,
+      statements: subroutineStatements,
       endToken: endToken,
     };
   }
