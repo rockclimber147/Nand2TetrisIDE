@@ -55,7 +55,7 @@ export type JackStatement =
 
 export interface JackLetStatementNode extends ASTNode {
     kind: ASTNodeKind.STATEMENT;
-    statementType: 'let';
+    statementType: typeof JackSpec.LET;
     varName: string;
     indexExpression?: JackExpressionNode; // for array[index]
     valueExpression: JackExpressionNode;
@@ -63,7 +63,7 @@ export interface JackLetStatementNode extends ASTNode {
 
 export interface JackIfStatementNode extends ASTNode {
     kind: ASTNodeKind.STATEMENT;
-    statementType: 'if';
+    statementType: typeof JackSpec.IF;
     condition: JackExpressionNode;
     trueStatements: JackStatement[];
     falseStatements?: JackStatement[]; // for the optional 'else'
@@ -71,27 +71,26 @@ export interface JackIfStatementNode extends ASTNode {
 
 export interface JackWhileStatementNode extends ASTNode {
     kind: ASTNodeKind.STATEMENT;
-    statementType: 'while';
+    statementType: typeof JackSpec.WHILE;
     condition: JackExpressionNode;
     statements: JackStatement[];
 }
 
 export interface JackDoStatementNode extends ASTNode {
     kind: ASTNodeKind.STATEMENT;
-    statementType: 'do';
+    statementType: typeof JackSpec.DO;
     subroutineCall: JackSubroutineCall;
 }
 
 export interface JackReturnStatementNode extends ASTNode {
     kind: ASTNodeKind.STATEMENT;
-    statementType: 'return';
+    statementType: typeof JackSpec.RETURN;
     expression?: JackExpressionNode;
 }
 
 export interface JackSubroutineCall {
-    // For 'func()' or 'obj.method()' or 'Class.func()'
-    target?: string; // The 'obj' or 'Class' part
-    name: string;    // The 'method' or 'func' part
+    target?: string;
+    name: string;
     arguments: JackExpressionNode[];
 }
 
