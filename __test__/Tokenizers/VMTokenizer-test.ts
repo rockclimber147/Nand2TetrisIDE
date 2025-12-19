@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer"
 import { TokenType } from '../../src/core/Token';
-import { VMSpec } from "../../src/core/VM/VMSpec"
+import { VMTokenMatcher } from "../../src/core/VM/VMSpec"
 
 describe('Jack Tokenizer', () => {
   
   test('should tokenize basic keywords and symbols', () => {
     const source = "push constant 0";
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
     expect(tokens).toHaveLength(3);
     expect(tokens[0].lexeme).toBe("push");
@@ -23,7 +23,7 @@ describe('VM Tokenizer - Advanced Scenarios', () => {
 
   test('should handle newlines and track line/column correctly', () => {
     const source = "push local 0\npop argument 1";
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("push");
@@ -43,7 +43,7 @@ describe('VM Tokenizer - Advanced Scenarios', () => {
     const source = `// Header comment
 push constant 10 // Inline comment
 add`;
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[1].lexeme).toBe("push");
@@ -56,7 +56,7 @@ add`;
 
   test('should handle crazy whitespace and indentation', () => {
     const source = "   label   LOOP   \n\t  goto LOOP";
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("label");
@@ -69,7 +69,7 @@ add`;
 
   test('should tokenize complex VM identifiers (dots and colons)', () => {
     const source = "call Main.fibonacci 1\nlabel Sys.init$loop: ";
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     const funcName = tokens[1];
@@ -83,7 +83,7 @@ add`;
 
   test('should handle empty lines and multiple newlines', () => {
     const source = "push constant 1\n\n\npush constant 2";
-    const tokenizer = new GenericTokenizer(source, VMSpec);
+    const tokenizer = new GenericTokenizer(source, VMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     const secondPush = tokens.filter(t => t.lexeme === "push")[1];

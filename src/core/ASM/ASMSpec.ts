@@ -1,6 +1,6 @@
 import { TokenType } from "../Token";
 
-export const ASMSpec: [RegExp, TokenType][] = [
+export const ASMTokenMatcher: [RegExp, TokenType][] = [
   [/^[ \t\r]+/, TokenType.SKIP],
   [/^\/\/.*/, TokenType.SKIP],
   [/^\n/, TokenType.NEWLINE],

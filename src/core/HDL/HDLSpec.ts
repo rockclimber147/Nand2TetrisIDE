@@ -1,6 +1,6 @@
 import { TokenType } from "../Token";
 
-export const HDLSpec: [RegExp, TokenType][] = [
+export const HDLTokenMatcher: [RegExp, TokenType][] = [
   [/^\s+/, TokenType.SKIP],
   [/^\/\/.*/, TokenType.SKIP],
   [/^\/\*[\s\S]*?\*\//, TokenType.SKIP],

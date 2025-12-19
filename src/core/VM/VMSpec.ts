@@ -1,6 +1,6 @@
 import { TokenType } from "../Token";
 
-export const VMSpec: [RegExp, TokenType][] = [
+export const VMTokenMatcher: [RegExp, TokenType][] = [
   [/^[ \t\r]+/, TokenType.SKIP],
   [/^\/\/.*/, TokenType.SKIP],
   [/^\n/, TokenType.NEWLINE],

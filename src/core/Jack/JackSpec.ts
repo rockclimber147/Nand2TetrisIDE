@@ -1,6 +1,6 @@
 import { TokenType } from "../Token";
 
-export const JackSpec: [RegExp, TokenType][] = [
+export const JackTokenMatcher: [RegExp, TokenType][] = [
   [/^\/\/.*/, TokenType.SKIP],
   [/^\/\*[\s\S]*?\*\//, TokenType.SKIP],
   [/^\s+/, TokenType.SKIP],

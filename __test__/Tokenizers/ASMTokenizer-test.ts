@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer";
 import { TokenType } from '../../src/core/Token';
-import { ASMSpec } from '../../src/core/ASM/ASMSpec';
+import { ASMTokenMatcher } from '../../src/core/ASM/ASMSpec';
 
 describe('ASM Tokenizer', () => {
 
   test('should tokenize A-instructions', () => {
     const source = "@100\n@LOOP";
-    const tokenizer = new GenericTokenizer(source, ASMSpec);
+    const tokenizer = new GenericTokenizer(source, ASMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     // @100
@@ -21,7 +21,7 @@ describe('ASM Tokenizer', () => {
 
   test('should tokenize C-instructions', () => {
     const source = "D=M+1;JGT";
-    const tokenizer = new GenericTokenizer(source, ASMSpec);
+    const tokenizer = new GenericTokenizer(source, ASMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     // D = M + 1 ; JGT
@@ -34,7 +34,7 @@ describe('ASM Tokenizer', () => {
 
   test('should tokenize labels', () => {
     const source = "(MY_LABEL)";
-    const tokenizer = new GenericTokenizer(source, ASMSpec);
+    const tokenizer = new GenericTokenizer(source, ASMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("(");
@@ -47,7 +47,7 @@ describe('ASM Tokenizer', () => {
     @10
     D=A // inline
     (END)`;
-    const tokenizer = new GenericTokenizer(source, ASMSpec);
+    const tokenizer = new GenericTokenizer(source, ASMTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     // (END) is on line 4

@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer";
 import { TokenType } from '../../src/core/Token';
-import { HDLSpec } from '../../src/core/HDL/HDLSpec';
+import { HDLTokenMatcher } from '../../src/core/HDL/HDLSpec';
 
 describe('HDL Tokenizer', () => {
 
   test('should tokenize a basic CHIP header and pins', () => {
     const source = "CHIP And { IN a, b; OUT out; }";
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0]).toMatchObject({ type: TokenType.KEYWORD, lexeme: "CHIP" });
@@ -22,7 +22,7 @@ describe('HDL Tokenizer', () => {
 
   test('should handle bus notation and ranges', () => {
     const source = "IN in[16]; OUT out[8];";
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[1].lexeme).toBe("in");
@@ -33,7 +33,7 @@ describe('HDL Tokenizer', () => {
 
   test('should tokenize part mapping with true/false constants', () => {
     const source = "Nand(a=in, b=true, out=w1);";
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("Nand");
@@ -56,7 +56,7 @@ describe('HDL Tokenizer', () => {
           OUT out;
       }
     `;
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("CHIP");
@@ -65,7 +65,7 @@ describe('HDL Tokenizer', () => {
 
   test('should handle complex spacing and formatting', () => {
     const source = "PARTS:And(  a =  a  ,b=b,out=out  );";
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("PARTS");
@@ -86,7 +86,7 @@ describe('HDL Tokenizer handles larger input', () => {
         PARTS:
         //// Replace this comment with your code.
     }`
-    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokenizer = new GenericTokenizer(source, HDLTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     test("Last token is correct", () => {

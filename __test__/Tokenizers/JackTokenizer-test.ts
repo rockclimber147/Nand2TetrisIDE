@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer"
 import { TokenType } from '../../src/core/Token';
-import { JackSpec } from "../../src/core/Jack/JackSpec"
+import { JackTokenMatcher } from "../../src/core/Jack/JackSpec"
 
 describe('Jack Tokenizer', () => {
   
   test('should tokenize basic keywords and symbols', () => {
     const source = "class Main {";
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens).toHaveLength(3);
@@ -40,7 +40,7 @@ describe('Jack Tokenizer', () => {
       let x = 5; /* block 
                     comment */
     `;
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     // Only "let", "x", "=", "5", ";" should remain
@@ -52,7 +52,7 @@ describe('Jack Tokenizer', () => {
 
   test('should handle string constants', () => {
     const source = 'let s = "hello world";';
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     const stringToken = tokens.find(t => t.type === TokenType.STRING);
@@ -61,7 +61,7 @@ describe('Jack Tokenizer', () => {
 
   test('should throw error on unexpected characters', () => {
     const source = "let x = #;"; // '#' is not in JackSpec
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     
     expect(() => tokenizer.tokenize()).toThrow(/Unexpected character/);
   });
@@ -71,7 +71,7 @@ describe('Jack Tokenizer', () => {
     `class
     Test
     `;
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].line).toBe(1);
@@ -87,7 +87,7 @@ describe('Jack Tokenizer', () => {
     */            //5
     Test          //6
     `;
-    const tokenizer = new GenericTokenizer(source, JackSpec);
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].line).toBe(1);
