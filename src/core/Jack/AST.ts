@@ -4,20 +4,22 @@ import { JackSpec } from "./JackSpec";
 export interface JackClassNode extends ASTNode {
     kind: ASTNodeKind.CLASS;
     name: string;
-    classVarDecs: JackVarDecNode[];
+    classVarDecs: JackClassVarDecNode[];
     subroutines: JackSubroutineNode[];
 }
 
-export interface JackVarDecNode extends ASTNode {
+export type ClassVarKind = typeof JackSpec.STATIC | typeof JackSpec.FIELD | typeof JackSpec.VAR;
+export interface JackClassVarDecNode extends ASTNode {
     kind: ASTNodeKind.VAR_DEC;
-    varKind: typeof JackSpec.STATIC | typeof JackSpec.FIELD | typeof JackSpec.VAR;
+    varKind: ClassVarKind;
     type: string;
     names: string[];
 }
 
+export type SubroutineKind = typeof JackSpec.CONSTRUCTOR | typeof JackSpec.FUNCTION | typeof JackSpec.METHOD;
 export interface JackSubroutineNode extends ASTNode {
     kind: ASTNodeKind.SUBROUTINE;
-    subroutineKind: typeof JackSpec.CONSTRUCTOR | typeof JackSpec.FUNCTION | typeof JackSpec.METHOD;
+    subroutineKind: SubroutineKind;
     returnType: string;
     name: string;
     parameters: JackParameterNode[];
@@ -29,6 +31,16 @@ export interface JackParameterNode extends ASTNode {
     name: string;
 }
 
+
+
 export interface JackSubroutineBodyNode extends ASTNode {
-    varDecs: JackVarDecNode[];
+    varDecs: JackSubroutineVarDecNode[];
+}
+
+export type SubroutineVarKind = typeof JackSpec.VAR;
+export interface JackSubroutineVarDecNode extends ASTNode {
+    kind: ASTNodeKind.VAR_DEC;
+    varKind: SubroutineVarKind;
+    type: string;
+    names: string[];
 }
