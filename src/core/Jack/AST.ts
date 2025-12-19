@@ -58,7 +58,7 @@ export interface JackLetStatementNode extends ASTNode {
   kind: ASTNodeKind.STATEMENT;
   statementType: typeof JackSpec.LET;
   varName: string;
-  indexExpression?: JackExpressionNode; // for array[index]
+  indexExpression?: JackExpressionNode;
   valueExpression: JackExpressionNode;
 }
 
@@ -66,8 +66,8 @@ export interface JackIfStatementNode extends ASTNode {
   kind: ASTNodeKind.STATEMENT;
   statementType: typeof JackSpec.IF;
   condition: JackExpressionNode;
-  trueStatements: JackStatementNode[];
-  falseStatements?: JackStatementNode[]; // for the optional 'else'
+  ifStatements: JackStatementNode[];
+  elseStatements?: JackStatementNode[];
 }
 
 export interface JackWhileStatementNode extends ASTNode {

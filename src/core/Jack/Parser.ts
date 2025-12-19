@@ -253,8 +253,39 @@ export class JackParser extends BaseParser<JackClassNode> {
     };
   }
 
-  private parseIf(): JackIfStatementNode {
-    throw Error();
+private parseIf(): JackIfStatementNode {
+    const startToken = this.validator.expectLexeme(JackSpec.IF);
+    
+    this.validator.expectLexeme(JackSpec.L_PAREN);
+    const condition = this.parseExpression();
+    this.validator.expectLexeme(JackSpec.R_PAREN);
+    
+    this.validator.expectLexeme(JackSpec.L_BRACE);
+    const ifStatements: JackStatementNode[] = [];
+    while (!this.check(TokenType.SYMBOL, JackSpec.R_BRACE)) {
+      ifStatements.push(this.parseStatement());
+    }
+    let endToken = this.validator.expectLexeme(JackSpec.R_BRACE);
+
+    let elseStatements: JackStatementNode[] | undefined;
+    if (this.match(TokenType.KEYWORD, JackSpec.ELSE)) {
+      this.validator.expectLexeme(JackSpec.L_BRACE);
+      elseStatements = [];
+      while (!this.check(TokenType.SYMBOL, JackSpec.R_BRACE)) {
+        elseStatements.push(this.parseStatement());
+      }
+      endToken = this.validator.expectLexeme(JackSpec.R_BRACE);
+    }
+
+    return {
+      kind: ASTNodeKind.STATEMENT,
+      statementType: JackSpec.IF,
+      startToken,
+      endToken,
+      condition,
+      ifStatements: ifStatements,
+      elseStatements: elseStatements,
+    };
   }
 
   private parseWhile(): JackWhileStatementNode {
