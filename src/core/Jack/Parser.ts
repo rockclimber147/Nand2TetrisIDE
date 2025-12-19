@@ -19,6 +19,7 @@ import type {
   JackReturnStatementNode,
   JackDoStatementNode,
   JackSubroutineCall,
+  JackTermNode,
 } from './AST';
 import { ASTNodeKind } from '../Parser/AST';
 
@@ -253,13 +254,13 @@ export class JackParser extends BaseParser<JackClassNode> {
     };
   }
 
-private parseIf(): JackIfStatementNode {
+  private parseIf(): JackIfStatementNode {
     const startToken = this.validator.expectLexeme(JackSpec.IF);
-    
+
     this.validator.expectLexeme(JackSpec.L_PAREN);
     const condition = this.parseExpression();
     this.validator.expectLexeme(JackSpec.R_PAREN);
-    
+
     this.validator.expectLexeme(JackSpec.L_BRACE);
     const ifStatements: JackStatementNode[] = [];
     while (!this.check(TokenType.SYMBOL, JackSpec.R_BRACE)) {
@@ -345,37 +346,68 @@ private parseIf(): JackIfStatementNode {
     };
   }
 
-private parseSubroutineCall(): JackSubroutineCall {
-  const identifier = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
-  let target: string | undefined;
-  let name: string;
+  private parseSubroutineCall(): JackSubroutineCall {
+    const identifier = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
+    let target: string | undefined;
+    let name: string;
 
-  if (this.match(TokenType.SYMBOL, JackSpec.DOT)) {
-    target = identifier;
-    name = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
-  } else {
-    target = JackSpec.THIS;
-    name = identifier;
+    if (this.match(TokenType.SYMBOL, JackSpec.DOT)) {
+      target = identifier;
+      name = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
+    } else {
+      target = JackSpec.THIS;
+      name = identifier;
+    }
+
+    this.validator.expectLexeme(JackSpec.L_PAREN);
+    const args = this.parseExpressionList();
+    this.validator.expectLexeme(JackSpec.R_PAREN);
+
+    return { target, name, arguments: args };
   }
 
-  this.validator.expectLexeme(JackSpec.L_PAREN);
-  const args = this.parseExpressionList();
-  this.validator.expectLexeme(JackSpec.R_PAREN);
-
-  return { target, name, arguments: args };
-}
-
-private parseExpressionList(): JackExpressionNode[] {
-  const expressions: JackExpressionNode[] = [];
-  if (!this.check(TokenType.SYMBOL, JackSpec.R_PAREN)) {
-    do {
-      expressions.push(this.parseExpression());
-    } while (this.match(TokenType.SYMBOL, JackSpec.COMMA));
+  private parseExpressionList(): JackExpressionNode[] {
+    const expressions: JackExpressionNode[] = [];
+    if (!this.check(TokenType.SYMBOL, JackSpec.R_PAREN)) {
+      do {
+        expressions.push(this.parseExpression());
+      } while (this.match(TokenType.SYMBOL, JackSpec.COMMA));
+    }
+    return expressions;
   }
-  return expressions;
-}
 
   private parseExpression(): JackExpressionNode {
-    throw Error();
+    const startToken = this.validator.peek(0);
+    const term = this.parseTerm();
+    const nextTerms: { op: string; term: JackTermNode }[] = [];
+
+    while (this.check(TokenType.SYMBOL) && JackSpec.OP.has(this.validator.peek(0).lexeme)) {
+      const op = this.validator.expectOneOfLexemes(JackSpec.OP).lexeme;
+      const nextTerm = this.parseTerm();
+      nextTerms.push({ op, term: nextTerm });
+    }
+
+    return {
+      kind: ASTNodeKind.EXPRESSION,
+      startToken,
+      endToken:
+        nextTerms.length > 0 ? nextTerms[nextTerms.length - 1].term.endToken : term.endToken,
+      term,
+      nextTerms,
+    };
+  }
+
+  private parseTerm(): JackTermNode {
+    const keywordConstants = new Set([JackSpec.TRUE, JackSpec.FALSE, JackSpec.NULL, JackSpec.THIS]);
+
+    const token = this.validator.expectOneOfLexemes(keywordConstants);
+
+    return {
+      kind: ASTNodeKind.TERM,
+      termType: 'KEYWORD',
+      value: token.lexeme,
+      startToken: token,
+      endToken: token,
+    };
   }
 }

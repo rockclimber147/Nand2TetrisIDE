@@ -114,6 +114,7 @@ export type JackTermType =
 export interface JackTermNode extends ASTNode {
   kind: ASTNodeKind.TERM;
   termType: JackTermType;
+  value: string;
   indexExpression?: JackExpressionNode;
   subroutineCall?: JackSubroutineCall;
   nestedExpression?: JackExpressionNode;
