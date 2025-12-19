@@ -28,7 +28,7 @@ export class TokenValidator {
     public expectOneOfTypes(types: Set<TokenType>): Token {
         const next: Token = this.advance();
         if (!types.has(next.type)) {
-            this.throwCompilerError(next, `Expected one of ${this.formatSet(types)}`)
+            this.throwCompilerError(next, `Expected one of types ${this.formatSet(types)}`)
         }
         return next;
     }

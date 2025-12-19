@@ -6,7 +6,7 @@ export class CompilerError extends Error {
   public readonly lexeme: string;
 
   constructor(public readonly token: Token, message: string) {
-    const fullMessage = `[Line ${token.line}:${token.column}] ${message} (Found: '${token.lexeme}')`;
+    const fullMessage = `[Line ${token.line}:${token.column}] ${message} (Found ${token.type}: '${token.lexeme}')`;
     super(fullMessage);
     
     this.name = 'CompilerError';
