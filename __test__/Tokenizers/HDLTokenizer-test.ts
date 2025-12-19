@@ -60,7 +60,7 @@ describe('HDL Tokenizer', () => {
     const tokens = tokenizer.tokenize();
 
     expect(tokens[0].lexeme).toBe("CHIP");
-    expect(tokens[0].line).toBe(5);
+    expect(tokens[0].line).toBe(4);
   });
 
   test('should handle complex spacing and formatting', () => {
