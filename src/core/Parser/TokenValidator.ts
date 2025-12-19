@@ -2,7 +2,7 @@ import { type Token, TokenType } from "../Token";
 import { CompilerError } from "../Errors";
 
 
-export class SyntaxValidator {
+export class TokenValidator {
     private tokens: Token[];
     private cursor: number = 0;
     public constructor(tokens: Token[]) {
