@@ -11,6 +11,9 @@ import type {
   JackSubroutineBodyNode,
   SubroutineVarKind,
   JackSubroutineVarDecNode,
+  JackStatement,
+  JackLetStatementNode,
+  JackExpressionNode,
 } from './AST';
 import { ASTNodeKind } from '../Parser/AST';
 
@@ -157,11 +160,16 @@ export class JackParser extends BaseParser<JackClassNode> {
     while (this.check(TokenType.KEYWORD, JackSpec.VAR)) {
       subroutineVarDecs.push(this.parseSubroutineVarDec());
     }
+    const subroutinreStatements: JackStatement[] = [];
+    while (JackSpec.STATEMENTS.has(this.validator.peek().lexeme)) {
+      subroutinreStatements.push(this.parseStatement());
+    }
     const endToken = this.validator.expectLexeme(JackSpec.R_BRACE);
     return {
       kind: ASTNodeKind.SUBROUTINE,
       startToken: startToken,
       varDecs: subroutineVarDecs,
+      statements: subroutinreStatements,
       endToken: endToken,
     };
   }
@@ -195,5 +203,47 @@ export class JackParser extends BaseParser<JackClassNode> {
       type,
       names,
     };
+  }
+
+  private parseStatement(): JackStatement {
+    const token = this.validator.peek(0);
+
+    switch (token.lexeme) {
+      case JackSpec.LET:
+        return this.parseLet();
+      // case JackSpec.IF:     return this.parseIf();
+      // case JackSpec.WHILE:  return this.parseWhile();
+      // case JackSpec.DO:     return this.parseDo();
+      // case JackSpec.RETURN: return this.parseReturn();
+    }
+    this.validator.throwCompilerError(token, 'Expected statement');
+  }
+
+  private parseLet(): JackLetStatementNode {
+    const startToken = this.validator.expectLexeme(JackSpec.LET);
+    const varName = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
+
+    let indexExpression: JackExpressionNode | undefined;
+    if (this.match(TokenType.SYMBOL, JackSpec.L_BRACKET)) {
+      indexExpression = this.parseExpression();
+      this.validator.expectLexeme(JackSpec.R_BRACKET);
+    }
+
+    this.validator.expectLexeme(JackSpec.EQ);
+    const valueExpression = this.parseExpression();
+    const endToken = this.validator.expectLexeme(JackSpec.SEMI);
+
+    return {
+      kind: ASTNodeKind.STATEMENT,
+      statementType: JackSpec.LET,
+      startToken,
+      endToken,
+      varName,
+      indexExpression,
+      valueExpression,
+    };
+  }
+  private parseExpression(): JackExpressionNode {
+    throw Error();
   }
 }

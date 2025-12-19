@@ -48,7 +48,7 @@ export class TokenValidator {
     return next;
   }
 
-  public throwCompilerError(t: Token, message: string) {
+  public throwCompilerError(t: Token, message: string): never {
     throw new CompilerError(t, message);
   }
 

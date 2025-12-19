@@ -36,6 +36,7 @@ export interface JackParameterNode extends ASTNode {
 
 export interface JackSubroutineBodyNode extends ASTNode {
   varDecs: JackSubroutineVarDecNode[];
+  statements: JackStatement[];
 }
 
 export type SubroutineVarKind = typeof JackSpec.VAR;
