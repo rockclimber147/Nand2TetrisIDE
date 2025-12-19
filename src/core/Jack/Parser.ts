@@ -169,7 +169,7 @@ private parseParameterList(): JackParameterNode[] {
         const varKind = startToken.lexeme as SubroutineVarKind;
 
         let type: string;
-        const next = this.validator.peek(1);
+        const next = this.validator.peek();
         if (next.type === TokenType.KEYWORD) {
             type = this.validator.expectOneOfLexemes(JackSpec.TYPES).lexeme;
         } else {
