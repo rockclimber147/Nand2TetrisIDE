@@ -3,7 +3,7 @@ import type { Token } from "../Token";
 export enum ASTNodeKind {
     PROGRAM,
     
-    CLASS, SUBROUTINE, VAR_DEC, STATEMENT, EXPRESSION,
+    CLASS, SUBROUTINE, VAR_DEC, STATEMENT, EXPRESSION, PARAMS,
     
     VM_COMMAND,
     

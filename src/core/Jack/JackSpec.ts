@@ -89,6 +89,8 @@ export class JackSpec {
         JackSpec.INT, JackSpec.BOOLEAN, JackSpec.CHAR
     ]);
 
+    static readonly RETURN_TYPES = new Set([...this.TYPES, this.VOID]);
+
     static readonly OP = new Set([
         JackSpec.PLUS, JackSpec.MINUS, JackSpec.MULT, JackSpec.DIV,
         JackSpec.AND, JackSpec.OR, JackSpec.LT, JackSpec.GT, JackSpec.EQ
