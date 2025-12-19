@@ -9,7 +9,7 @@ export class TokenValidator {
         this.tokens = tokens;
     }
 
-    public peek(offset: number): Token {
+    public peek(offset: number = 0): Token {
         const index = this.cursor + offset;
         if (index >= this.tokens.length) {
             throw new Error("Peeking past token stream termination")
