@@ -399,15 +399,14 @@ export class JackParser extends BaseParser<JackClassNode> {
 
   private parseTerm(): JackTermNode {
     const keywordConstants = new Set([JackSpec.TRUE, JackSpec.FALSE, JackSpec.NULL, JackSpec.THIS]);
-
-    const token = this.validator.expectOneOfLexemes(keywordConstants);
-
-    return {
-      kind: ASTNodeKind.TERM,
-      termType: 'KEYWORD',
-      value: token.lexeme,
-      startToken: token,
-      endToken: token,
-    };
+      const token = this.validator.expectOneOfLexemes(keywordConstants);
+      return {
+        kind: ASTNodeKind.TERM,
+        termType: 'VAR_NAME',
+        value: token.lexeme,
+        startToken: token,
+        endToken: token,
+      };
+    
   }
 }
