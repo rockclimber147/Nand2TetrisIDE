@@ -345,9 +345,35 @@ private parseIf(): JackIfStatementNode {
     };
   }
 
-  private parseSubroutineCall(): JackSubroutineCall {
-    throw Error();
+private parseSubroutineCall(): JackSubroutineCall {
+  const identifier = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
+  let target: string | undefined;
+  let name: string;
+
+  if (this.match(TokenType.SYMBOL, JackSpec.DOT)) {
+    target = identifier;
+    name = this.validator.expectType(TokenType.IDENTIFIER).lexeme;
+  } else {
+    target = JackSpec.THIS;
+    name = identifier;
   }
+
+  this.validator.expectLexeme(JackSpec.L_PAREN);
+  const args = this.parseExpressionList();
+  this.validator.expectLexeme(JackSpec.R_PAREN);
+
+  return { target, name, arguments: args };
+}
+
+private parseExpressionList(): JackExpressionNode[] {
+  const expressions: JackExpressionNode[] = [];
+  if (!this.check(TokenType.SYMBOL, JackSpec.R_PAREN)) {
+    do {
+      expressions.push(this.parseExpression());
+    } while (this.match(TokenType.SYMBOL, JackSpec.COMMA));
+  }
+  return expressions;
+}
 
   private parseExpression(): JackExpressionNode {
     throw Error();
