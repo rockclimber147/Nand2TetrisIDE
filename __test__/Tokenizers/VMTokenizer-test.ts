@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { GenericTokenizer } from "../src/core/Tokenizer"
-import { Token, TokenType } from '../src/core/Token';
-import { VMSpec } from "../src/core/VM/VMSpec"
+import { GenericTokenizer } from "../../src/core/Tokenizer"
+import { Token, TokenType } from '../../src/core/Token';
+import { VMSpec } from "../../src/core/VM/VMSpec"
 
 describe('Jack Tokenizer', () => {
   
