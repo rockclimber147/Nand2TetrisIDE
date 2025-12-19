@@ -1,4 +1,5 @@
 import { ASTNodeKind, type ASTNode } from "../Parser/AST";
+import { JackSpec } from "./JackSpec";
 
 export interface JackClassNode extends ASTNode {
     kind: ASTNodeKind.CLASS;
@@ -9,14 +10,14 @@ export interface JackClassNode extends ASTNode {
 
 export interface JackVarDecNode extends ASTNode {
     kind: ASTNodeKind.VAR_DEC;
-    varKind: 'static' | 'field' | 'var';
+    varKind: typeof JackSpec.STATIC | typeof JackSpec.FIELD | typeof JackSpec.VAR;
     type: string;
     names: string[];
 }
 
 export interface JackSubroutineNode extends ASTNode {
     kind: ASTNodeKind.SUBROUTINE;
-    subroutineKind: 'constructor' | 'function' | 'method';
+    subroutineKind: typeof JackSpec.CONSTRUCTOR | typeof JackSpec.FUNCTION | typeof JackSpec.METHOD;
     returnType: string;
     name: string;
     parameters: JackParameterNode[];
