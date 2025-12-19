@@ -112,6 +112,7 @@ export class ExpressionNodeTypes {
 
 export interface JackBinaryExpressionNode extends ASTNode {
   kind: ASTNodeKind.EXPRESSION;
+  type: typeof ExpressionNodeTypes.BINARY_EXPRESSION,
   term: JackExpressionNode;
   nextTerms: { op: string; term: JackExpressionNode }[];
 }

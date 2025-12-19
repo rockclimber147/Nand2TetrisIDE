@@ -404,6 +404,7 @@ export class JackParser extends BaseParser<JackClassNode> {
 
     return {
       kind: ASTNodeKind.EXPRESSION,
+      type: ExpressionNodeTypes.BINARY_EXPRESSION,
       startToken,
       endToken:
         nextTerms.length > 0 ? nextTerms[nextTerms.length - 1].term.endToken : term.endToken,
