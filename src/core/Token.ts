@@ -6,7 +6,7 @@ export enum TokenType {
   STRING = 'STRING',
   NEWLINE = 'NEWLINE',
   SKIP = 'SKIP',
-  EOF = 'EOF'
+  EOF = 'EOF',
 }
 
 export interface Token {

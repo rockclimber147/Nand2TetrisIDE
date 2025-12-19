@@ -1,74 +1,70 @@
-import { type Token, TokenType } from "../Token";
-import { CompilerError } from "../Errors";
-
+import { type Token, TokenType } from '../Token';
+import { CompilerError } from '../Errors';
 
 export class TokenValidator {
-    private tokens: Token[];
-    private cursor: number = 0;
-    public constructor(tokens: Token[]) {
-        this.tokens = tokens;
-    }
+  private tokens: Token[];
+  private cursor: number = 0;
+  public constructor(tokens: Token[]) {
+    this.tokens = tokens;
+  }
 
-    public peek(offset: number = 0): Token {
-        const index = this.cursor + offset;
-        if (index >= this.tokens.length) {
-            throw new Error("Peeking past token stream termination")
-        }
-        return this.tokens[index]
+  public peek(offset: number = 0): Token {
+    const index = this.cursor + offset;
+    if (index >= this.tokens.length) {
+      throw new Error('Peeking past token stream termination');
     }
+    return this.tokens[index];
+  }
 
-    public expectType(type: TokenType): Token {
-        const next: Token = this.advance();
-        if (next.type != type) {
-            this.throwCompilerError(next, `Expected type ${type}`)
-        }
-        return next;
+  public expectType(type: TokenType): Token {
+    const next: Token = this.advance();
+    if (next.type != type) {
+      this.throwCompilerError(next, `Expected type ${type}`);
     }
+    return next;
+  }
 
-    public expectOneOfTypes(types: Set<TokenType>): Token {
-        const next: Token = this.advance();
-        if (!types.has(next.type)) {
-            this.throwCompilerError(next, `Expected one of types ${this.formatSet(types)}`)
-        }
-        return next;
+  public expectOneOfTypes(types: Set<TokenType>): Token {
+    const next: Token = this.advance();
+    if (!types.has(next.type)) {
+      this.throwCompilerError(next, `Expected one of types ${this.formatSet(types)}`);
     }
+    return next;
+  }
 
-    public expectLexeme(lexeme: string): Token {
-        const next: Token = this.advance();
-        if (next.lexeme != lexeme) {
-            this.throwCompilerError(next, `Expected ${lexeme}`)
-        }
-        return next;
+  public expectLexeme(lexeme: string): Token {
+    const next: Token = this.advance();
+    if (next.lexeme != lexeme) {
+      this.throwCompilerError(next, `Expected ${lexeme}`);
     }
+    return next;
+  }
 
-    public expectOneOfLexemes(lexemes: Set<string>): Token {
-        const next: Token = this.advance();
-        if (!lexemes.has(next.lexeme)) {
-        this.throwCompilerError(
-            next,
-            `Expected one of lexemes: [${this.formatSet(lexemes)}]`
-        );
-        }
-        return next;
+  public expectOneOfLexemes(lexemes: Set<string>): Token {
+    const next: Token = this.advance();
+    if (!lexemes.has(next.lexeme)) {
+      this.throwCompilerError(next, `Expected one of lexemes: [${this.formatSet(lexemes)}]`);
     }
+    return next;
+  }
 
-    public throwCompilerError(t: Token, message: string) {
-        throw new CompilerError(t, message);
-    }
+  public throwCompilerError(t: Token, message: string) {
+    throw new CompilerError(t, message);
+  }
 
-    private advance(): Token {
-        if (this.cursor >= this.tokens.length) {
-            return {
-                type: TokenType.EOF,
-                lexeme: "",
-                line: -1,
-                column: -1
-            }
-        }
-        return this.tokens[this.cursor++];
+  private advance(): Token {
+    if (this.cursor >= this.tokens.length) {
+      return {
+        type: TokenType.EOF,
+        lexeme: '',
+        line: -1,
+        column: -1,
+      };
     }
+    return this.tokens[this.cursor++];
+  }
 
-    private formatSet(set: Set<string | TokenType>): string {
-        return [...set].join(", ");
-    }
+  private formatSet(set: Set<string | TokenType>): string {
+    return [...set].join(', ');
+  }
 }

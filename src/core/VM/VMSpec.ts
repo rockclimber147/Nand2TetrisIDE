@@ -1,4 +1,4 @@
-import { TokenType } from "../Token";
+import { TokenType } from '../Token';
 
 export const VMTokenMatcher: [RegExp, TokenType][] = [
   [/^[ \t\r]+/, TokenType.SKIP],
@@ -8,5 +8,5 @@ export const VMTokenMatcher: [RegExp, TokenType][] = [
   [/^(label|goto|if-goto|function|call|return)\b/, TokenType.KEYWORD],
   [/^(argument|local|static|this|that|pointer|temp|constant)\b/, TokenType.KEYWORD],
   [/^\d+/, TokenType.INT],
-  [/^[a-zA-Z_$.:][a-zA-Z0-9_$.:]*/, TokenType.IDENTIFIER]
+  [/^[a-zA-Z_$.:][a-zA-Z0-9_$.:]*/, TokenType.IDENTIFIER],
 ];

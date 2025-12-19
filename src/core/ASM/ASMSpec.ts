@@ -1,4 +1,4 @@
-import { TokenType } from "../Token";
+import { TokenType } from '../Token';
 
 export const ASMTokenMatcher: [RegExp, TokenType][] = [
   [/^[ \t\r]+/, TokenType.SKIP],
