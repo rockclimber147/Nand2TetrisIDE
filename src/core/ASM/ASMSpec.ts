@@ -1,0 +1,10 @@
+import { TokenType } from "../Token";
+
+export const ASMSpec: [RegExp, TokenType][] = [
+  [/^[ \t\r]+/, TokenType.SKIP],
+  [/^\/\/.*/, TokenType.SKIP],
+  [/^\n/, TokenType.NEWLINE],
+  [/^[@=;()\-+&|!]/, TokenType.SYMBOL],
+  [/^\d+/, TokenType.INT],
+  [/^[a-zA-Z_$.:][a-zA-Z0-9_$.:]*/, TokenType.IDENTIFIER],
+];
