@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from '../../src/core/Tokenizer';
 import { TokenType } from '../../src/core/Token';
-import { HDLTokenMatcher } from '../../src/core/HDL/HDLSpec';
+import { HDLTokenMatcher } from '../../src/core/Languages/HDL/HDLSpec';
 
 describe('HDL Tokenizer', () => {
   test('should tokenize a basic CHIP header and pins', () => {

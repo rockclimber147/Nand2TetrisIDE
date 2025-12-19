@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from '../../src/core/Tokenizer';
-import { JackSpec, JackTokenMatcher } from '../../src/core/Jack/JackSpec';
-import { JackParser } from '../../src/core/Jack/Parser';
+import { JackSpec, JackTokenMatcher } from '../../src/core/Languages/Jack/JackSpec';
+import { JackParser } from '../../src/core/Languages/Jack/Parser';
 import {
   JackClassNode,
   JackLetStatementNode,
   JackWhileStatementNode,
   JackIfStatementNode,
-} from '../../src/core/Jack/AST';
+} from '../../src/core/Languages/Jack/AST';
 
 const parseToClassAST = (source: string): JackClassNode => {
   const tokenizer = new GenericTokenizer(source, JackTokenMatcher);

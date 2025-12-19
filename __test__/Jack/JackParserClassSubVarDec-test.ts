@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from '../../src/core/Tokenizer';
-import { JackSpec, JackTokenMatcher } from '../../src/core/Jack/JackSpec';
-import { JackParser } from '../../src/core/Jack/Parser';
-import { ASTNodeKind } from '../../src/core/Parser/AST';
+import { JackSpec, JackTokenMatcher } from '../../src/core/Languages/Jack/JackSpec';
+import { JackParser } from '../../src/core/Languages/Jack/Parser';
+import { ASTNodeKind } from '../../src/core/AST/AST';
 
 describe('JackParser', () => {
   const parseSource = (source: string) => {

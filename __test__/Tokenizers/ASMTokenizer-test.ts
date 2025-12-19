@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from '../../src/core/Tokenizer';
 import { TokenType } from '../../src/core/Token';
-import { ASMTokenMatcher } from '../../src/core/ASM/ASMSpec';
+import { ASMTokenMatcher } from '../../src/core/Languages/ASM/ASMSpec';
 
 describe('ASM Tokenizer', () => {
   test('should tokenize A-instructions', () => {

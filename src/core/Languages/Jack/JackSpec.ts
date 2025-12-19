@@ -1,4 +1,4 @@
-import { TokenType } from '../Token';
+import { TokenType } from '../../Token';
 
 export const JackTokenMatcher: [RegExp, TokenType][] = [
   [/^\/\/.*/, TokenType.SKIP],

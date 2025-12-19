@@ -1,5 +1,5 @@
-import { BaseParser } from '../Parser/BaseParser';
-import { TokenType } from '../Token';
+import { BaseParser } from '../../Parser/BaseParser';
+import { TokenType } from '../../Token';
 import { JackSpec } from './JackSpec';
 import {
   type JackClassNode,
@@ -21,7 +21,7 @@ import {
   type JackSubroutineCallNode,
   ExpressionNodeTypes,
 } from './AST';
-import { ASTNodeKind } from '../Parser/AST';
+import { ASTNodeKind } from '../../AST/AST';
 
 export class JackParser extends BaseParser<JackClassNode> {
   public parse(): JackClassNode {

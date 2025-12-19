@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from '../../src/core/Tokenizer';
 import { TokenType } from '../../src/core/Token';
-import { VMTokenMatcher } from '../../src/core/VM/VMSpec';
+import { VMTokenMatcher } from '../../src/core/Languages/VM/VMSpec';
 
 describe('Jack Tokenizer', () => {
   test('should tokenize basic keywords and symbols', () => {

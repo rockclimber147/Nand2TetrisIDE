@@ -1,4 +1,4 @@
-import { ASTNodeKind, type ASTNode } from '../Parser/AST';
+import { ASTNodeKind, type ASTNode } from '../../AST/AST';
 import { JackSpec } from './JackSpec';
 
 export interface JackClassNode extends ASTNode {
@@ -112,7 +112,7 @@ export class ExpressionNodeTypes {
 
 export interface JackBinaryExpressionNode extends ASTNode {
   kind: ASTNodeKind.EXPRESSION;
-  type: typeof ExpressionNodeTypes.BINARY_EXPRESSION,
+  type: typeof ExpressionNodeTypes.BINARY_EXPRESSION;
   term: JackExpressionNode;
   nextTerms: { op: string; term: JackExpressionNode }[];
 }
