@@ -76,3 +76,23 @@ describe('HDL Tokenizer', () => {
     expect(equalsToken).toBeDefined();
   });
 });
+
+describe('HDL Tokenizer handles larger input', () => {
+    const source = `
+    CHIP And {
+        IN a, b;
+        OUT out;
+        
+        PARTS:
+        //// Replace this comment with your code.
+    }`
+    const tokenizer = new GenericTokenizer(source, HDLSpec);
+    const tokens = tokenizer.tokenize();
+
+    test("Last token is correct", () => {
+        const last = tokens[tokens.length - 1];
+        expect(last.lexeme).toBe("}");
+        expect(last.type).toBe(TokenType.SYMBOL);
+        expect(last.line).toBe(8)
+    })
+})
