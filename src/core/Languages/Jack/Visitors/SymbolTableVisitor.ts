@@ -11,7 +11,7 @@ export class GlobalSymbolTable {
     private classes = new Map<string, ClassLevelTable>();
     
     public addClass(className: string): ClassLevelTable {
-        if (this.classes.has(className)) {
+        if (this.classes.has(className) && !this.classes.get(className)?.isBuiltIn) {
             throw new Error(`Class ${className} already defined.`);
         }
         const table = new ClassLevelTable(className);
@@ -34,7 +34,7 @@ export class ClassLevelTable {
   private subroutines = new Map<string, SubroutineLevelTable>();
   private counts: Record<ClassSymbolKind, number> = { STATIC: 0, FIELD: 0 };
 
-  constructor(public readonly className: string) {}
+  constructor(public readonly className: string, public readonly isBuiltIn: boolean = false) {}
 
   public defineVar(name: string, type: string, kind: ClassSymbolKind): void {
     if (this.vars.has(name)) {
