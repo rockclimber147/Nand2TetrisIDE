@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer"
-import { Token, TokenType } from '../../src/core/Token';
+import { TokenType } from '../../src/core/Token';
 import { VMSpec } from "../../src/core/VM/VMSpec"
 
 describe('Jack Tokenizer', () => {
@@ -26,17 +26,14 @@ describe('VM Tokenizer - Advanced Scenarios', () => {
     const tokenizer = new GenericTokenizer(source, VMSpec);
     const tokens = tokenizer.tokenize();
 
-    // Line 1
     expect(tokens[0].lexeme).toBe("push");
     expect(tokens[0].line).toBe(1);
     expect(tokens[0].column).toBe(1);
 
-    // Newline Token
     const newline = tokens[3];
     expect(newline.type).toBe(TokenType.NEWLINE);
     expect(newline.line).toBe(1);
 
-    // Line 2 starts after the newline
     expect(tokens[4].lexeme).toBe("pop");
     expect(tokens[4].line).toBe(2);
     expect(tokens[4].column).toBe(1);
@@ -49,11 +46,9 @@ add`;
     const tokenizer = new GenericTokenizer(source, VMSpec);
     const tokens = tokenizer.tokenize();
 
-    // 1. "push" should be on line 2 because of header comment and its newline
     expect(tokens[1].lexeme).toBe("push");
     expect(tokens[1].line).toBe(2);
 
-    // 2. "add" should be on line 3
     const addToken = tokens.find(t => t.lexeme === "add");
     expect(addToken?.line).toBe(3);
     expect(addToken?.column).toBe(1);
@@ -64,7 +59,6 @@ add`;
     const tokenizer = new GenericTokenizer(source, VMSpec);
     const tokens = tokenizer.tokenize();
 
-    // "label" starts after 3 spaces
     expect(tokens[0].lexeme).toBe("label");
     expect(tokens[0].column).toBe(4);
 
@@ -92,13 +86,8 @@ add`;
     const tokenizer = new GenericTokenizer(source, VMSpec);
     const tokens = tokenizer.tokenize();
 
-    // Find the second "push"
     const secondPush = tokens.filter(t => t.lexeme === "push")[1];
     
-    // Line 1: push, constant, 1, \n
-    // Line 2: \n
-    // Line 3: \n
-    // Line 4: push
     expect(secondPush.line).toBe(4);
   });
 });

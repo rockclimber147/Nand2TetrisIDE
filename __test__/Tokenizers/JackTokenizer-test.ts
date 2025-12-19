@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { GenericTokenizer } from "../../src/core/Tokenizer"
-import { Token, TokenType } from '../../src/core/Token';
+import { TokenType } from '../../src/core/Token';
 import { JackSpec } from "../../src/core/Jack/JackSpec"
 
 describe('Jack Tokenizer', () => {
