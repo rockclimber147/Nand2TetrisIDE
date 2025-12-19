@@ -113,7 +113,7 @@ export class ExpressionNodeTypes {
 export interface JackBinaryExpressionNode extends ASTNode {
   kind: ASTNodeKind.EXPRESSION;
   term: JackExpressionNode;
-  nextTerms: { op: string; term: JackExpressionNode }[];  
+  nextTerms: { op: string; term: JackExpressionNode }[];
 }
 
 export interface JackIntegerLiteralNode extends ASTNode {
@@ -131,14 +131,14 @@ export interface JackStringLiteralNode extends ASTNode {
 export interface JackKeywordLiteralNode extends ASTNode {
   kind: ASTNodeKind.TERM;
   type: typeof ExpressionNodeTypes.KEYWORD;
-  keyword: string; // true, false, null, this
+  keyword: string;
 }
 
 export interface JackVariableTermNode extends ASTNode {
   kind: ASTNodeKind.TERM;
   type: typeof ExpressionNodeTypes.VAR_NAME;
   name: string;
-  arrayIndex?: JackBinaryExpressionNode; // let x = a[i]
+  arrayIndex?: JackExpressionNode;
 }
 
 export interface JackUnaryTermNode extends ASTNode {
@@ -151,7 +151,7 @@ export interface JackUnaryTermNode extends ASTNode {
 export interface JackParenthesizedExpressionNode extends ASTNode {
   kind: ASTNodeKind.TERM;
   type: typeof ExpressionNodeTypes.PAREN_EXPRESSION;
-  expression: JackBinaryExpressionNode;
+  expression: JackExpressionNode;
 }
 
 export interface JackSubroutineCallNode extends ASTNode {

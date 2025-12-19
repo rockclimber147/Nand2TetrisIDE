@@ -52,7 +52,7 @@ export class TokenValidator {
     throw new CompilerError(t, message);
   }
 
-  private advance(): Token {
+  public advance(): Token {
     if (this.cursor >= this.tokens.length) {
       return {
         type: TokenType.EOF,

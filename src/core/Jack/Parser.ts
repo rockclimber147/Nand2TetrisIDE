@@ -413,14 +413,96 @@ export class JackParser extends BaseParser<JackClassNode> {
   }
 
   private parseTerm(): JackExpressionNode {
-    const keywordConstants = new Set([JackSpec.TRUE, JackSpec.FALSE, JackSpec.NULL]);
-    const token = this.validator.expectOneOfLexemes(keywordConstants);
-    return {
+    const token = this.validator.peek(0);
+    if (this.match(TokenType.INT)) {
+      return {
+        kind: ASTNodeKind.TERM,
+        type: ExpressionNodeTypes.INTEGER,
+        value: Number(token.lexeme),
+        startToken: token,
+        endToken: token,
+      };
+    }
+    if (this.match(TokenType.STRING)) {
+      const content = token.lexeme.slice(1, -1);
+      return {
+        kind: ASTNodeKind.TERM,
+        type: ExpressionNodeTypes.STRING,
+        value: content,
+        startToken: token,
+        endToken: token,
+      };
+    }
+
+    const keywordConstants = new Set([JackSpec.TRUE, JackSpec.FALSE, JackSpec.NULL, JackSpec.THIS]);
+    if (token.type === TokenType.KEYWORD && keywordConstants.has(token.lexeme)) {
+      this.validator.advance();
+      return {
         kind: ASTNodeKind.TERM,
         type: ExpressionNodeTypes.KEYWORD,
         keyword: token.lexeme,
         startToken: token,
         endToken: token,
-    };
+      };
+    }
+
+    if (this.check(TokenType.SYMBOL) && JackSpec.UNARY_OP.has(token.lexeme)) {
+      const op = this.validator.advance().lexeme;
+      const term = this.parseTerm(); // Recursive call
+      return {
+        kind: ASTNodeKind.TERM,
+        type: ExpressionNodeTypes.UNARY_OP,
+        op,
+        term,
+        startToken: token,
+        endToken: term.endToken,
+      };
+    }
+
+    if (this.match(TokenType.SYMBOL, JackSpec.L_PAREN)) {
+      const expression = this.parseExpression();
+      const endToken = this.validator.expectLexeme(JackSpec.R_PAREN);
+      return {
+        kind: ASTNodeKind.TERM,
+        type: ExpressionNodeTypes.PAREN_EXPRESSION,
+        expression,
+        startToken: token,
+        endToken,
+      };
+    }
+
+    if (token.type === TokenType.IDENTIFIER) {
+      const nextToken = this.validator.peek(1);
+
+      if (nextToken.lexeme === JackSpec.L_BRACKET) {
+        const name = this.validator.advance().lexeme;
+        this.validator.expectLexeme(JackSpec.L_BRACKET);
+        const indexExpression = this.parseExpression();
+        const endToken = this.validator.expectLexeme(JackSpec.R_BRACKET);
+        return {
+          kind: ASTNodeKind.TERM,
+          type: ExpressionNodeTypes.VAR_NAME,
+          name,
+          arrayIndex: indexExpression,
+          startToken: token,
+          endToken,
+        };
+      }
+
+      if (nextToken.lexeme === JackSpec.L_PAREN || nextToken.lexeme === JackSpec.DOT) {
+        return this.parseSubroutineCall();
+      }
+
+      this.validator.advance();
+      return {
+        kind: ASTNodeKind.TERM,
+        type: ExpressionNodeTypes.VAR_NAME,
+        name: token.lexeme,
+        startToken: token,
+        endToken: token,
+      };
+    }
+
+    this.validator.throwCompilerError(token, `Unexpected token in term: ${token.lexeme}`);
   }
 }
