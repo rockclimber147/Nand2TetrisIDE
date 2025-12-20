@@ -18,9 +18,8 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
 
     node.classVarDecs.forEach((varDecNode) => {
       varDecNode.names.forEach((name) => {
-        const kind = varDecNode.varKind === JackSpec.STATIC
-          ? SymbolKinds.STATIC
-          : SymbolKinds.FIELD;
+        const kind =
+          varDecNode.varKind === JackSpec.STATIC ? SymbolKinds.STATIC : SymbolKinds.FIELD;
         classTable.defineVar(name, varDecNode.type, kind);
       });
     });
