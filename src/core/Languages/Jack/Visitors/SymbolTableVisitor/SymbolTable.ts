@@ -1,11 +1,14 @@
+import { JackSpec } from "../../JackSpec";
+
 export class SymbolKinds {
     static readonly STATIC = "STATIC";
     static readonly FIELD = "FIELD";
     static readonly ARG = "ARG";
     static readonly VAR = "VAR";
 }
-export type ClassSymbolKind = typeof SymbolKinds.STATIC | typeof SymbolKinds.FIELD
-export type FieldSymbolKind = typeof SymbolKinds.ARG | typeof SymbolKinds.VAR;
+export type ClassVarKind = typeof SymbolKinds.STATIC | typeof SymbolKinds.FIELD;
+export type SubroutineKind = typeof JackSpec.CONSTRUCTOR | typeof JackSpec.METHOD | typeof JackSpec.FUNCTION;
+export type SubroutineVarKind = typeof SymbolKinds.ARG | typeof SymbolKinds.VAR;
 
 export class GlobalSymbolTable {
     private classes = new Map<string, ClassLevelTable>();
@@ -22,21 +25,21 @@ export class GlobalSymbolTable {
 
 
 
-export interface ClassSymbolEntry {
+export interface ClassVarEntry {
     name: string;
     type: string;
-    kind: ClassSymbolKind;
+    kind: ClassVarKind;
     index: number;
 }
 
 export class ClassLevelTable {
-    private vars = new Map<string, ClassSymbolEntry>();
+    private vars = new Map<string, ClassVarEntry>();
     private subroutines = new Map<string, SubroutineLevelTable>();
-    private counts: Record<ClassSymbolKind, number> = { STATIC: 0, FIELD: 0 };
+    private counts: Record<ClassVarKind, number> = { STATIC: 0, FIELD: 0 };
 
     constructor(public readonly className: string, public readonly isBuiltIn: boolean = false) { }
 
-    public defineVar(name: string, type: string, kind: ClassSymbolKind): void {
+    public defineVar(name: string, type: string, kind: ClassVarKind): void {
         if (this.vars.has(name)) {
             throw new Error(`Identifier '${name}' is already defined in class scope.`);
         }
@@ -53,24 +56,56 @@ export class ClassLevelTable {
         if (this.subroutines.has(name)) {
             throw new Error(`Subroutine '${name}' is already defined in class ${this.className}.`);
         }
-        const table = new SubroutineLevelTable();
+        const table = new SubroutineLevelTable(name, this.className);
         this.subroutines.set(name, table);
         return table;
     }
 
-    public lookup(name: string): ClassSymbolEntry | undefined {
+    public lookupVar(name: string): ClassVarEntry {
         if (!this.vars.has(name)) {
             throw new Error(`Var ${name} does not exist in class ${this.className}`)
         }
-        return this.vars.get(name);
+        return this.vars.get(name)!;
     }
 
-    public getSubroutine(name: string): SubroutineLevelTable | undefined {
+    public lookupSubroutine(name: string): SubroutineLevelTable {
         if (!this.vars.has(name)) {
             throw new Error(`Method/Function ${name} does not exist in class ${this.className}`)
         }
-        return this.subroutines.get(name);
+        return this.subroutines.get(name)!;
     }
 }
 
-export class SubroutineLevelTable { }
+export interface SubroutineVarEntry {
+    name: string;
+    type: string;
+    kind: SubroutineVarKind;
+    index: number;
+}
+
+export class SubroutineLevelTable {
+    private vars: Map<string, SubroutineVarEntry> = new Map();
+    private counts: Record<SubroutineVarKind, number> = { VAR: 0, ARG: 0}
+
+    constructor(public readonly subroutineName: string, public readonly className: string) { }
+
+    public defineVar(name: string, type: string, kind: SubroutineVarKind): void {
+        if (this.vars.has(name)) {
+            throw new Error(`Identifier '${name}' is already defined in ${this.className}.${this.subroutineName}`);
+        }
+
+        this.vars.set(name, {
+            name,
+            type,
+            kind,
+            index: this.counts[kind]++,
+        });
+    }
+
+    public lookupVar(name: string): SubroutineVarEntry {
+        if (!this.vars.has(name)) {
+            throw new Error(`Var ${name} does not exist in class ${this.className}.${this.subroutineName}`)
+        }
+        return this.vars.get(name)!;
+    }
+}
