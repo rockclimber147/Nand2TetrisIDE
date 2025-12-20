@@ -5,21 +5,23 @@ import { ClassLevelTable, GlobalSymbolTable, SymbolKinds } from './SymbolTable';
 
 export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
   private table: GlobalSymbolTable;
-  private current: ClassLevelTable | undefined = undefined;
+  private currentClass: ClassLevelTable | undefined = undefined;
+
   constructor() {
     super();
     this.table = new GlobalSymbolTable();
   }
+
   protected visitClass(node: JackClassNode): GlobalSymbolTable {
     const classTable = this.table.addClass(node.name);
-    this.current = classTable;
+    this.currentClass = classTable;
+
     node.classVarDecs.forEach((varDecNode) => {
       varDecNode.names.forEach((name) => {
-        classTable.defineVar(
-          name,
-          varDecNode.type,
-          varDecNode.varKind == JackSpec.STATIC ? SymbolKinds.STATIC : SymbolKinds.FIELD,
-        ); // TODO: Better organization of types
+        const kind = varDecNode.varKind === JackSpec.STATIC
+          ? SymbolKinds.STATIC
+          : SymbolKinds.FIELD;
+        classTable.defineVar(name, varDecNode.type, kind);
       });
     });
 
@@ -27,23 +29,28 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
       this.visitSubroutine(subroutineNode);
     });
 
-    this.current = undefined;
+    this.currentClass = undefined;
     return this.table;
   }
+
   protected visitSubroutine(node: JackSubroutineNode): GlobalSymbolTable {
-    const classTable = this.current!;
+    const classTable = this.currentClass!;
     const subroutineTable = classTable.defineSubroutine(node.name);
+
+    if (node.subroutineKind === JackSpec.METHOD) {
+      subroutineTable.defineVar(JackSpec.THIS, classTable.className, SymbolKinds.ARG);
+    }
+
     node.parameters.forEach((param) => {
       subroutineTable.defineVar(param.name, param.type, SymbolKinds.ARG);
     });
-    const varDecs = node.body?.varDecs;
-    if (varDecs) {
-      varDecs.forEach((varDecNode) => {
-        varDecNode.names.forEach((name) => {
-          subroutineTable.defineVar(name, varDecNode.varKind, SymbolKinds.VAR);
-        });
+
+    node.body?.varDecs.forEach((varDecNode) => {
+      varDecNode.names.forEach((name) => {
+        subroutineTable.defineVar(name, varDecNode.type, SymbolKinds.VAR);
       });
-    }
+    });
+
     return this.table;
   }
 }
