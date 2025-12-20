@@ -73,7 +73,7 @@ export class ClassLevelTable {
   }
 
   public lookupSubroutine(name: string): SubroutineLevelTable {
-    if (!this.vars.has(name)) {
+    if (!this.subroutines.has(name)) {
       throw new Error(`Method/Function ${name} does not exist in class ${this.className}`);
     }
     return this.subroutines.get(name)!;
