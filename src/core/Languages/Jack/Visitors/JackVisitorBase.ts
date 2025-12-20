@@ -1,6 +1,7 @@
 import { VisitorBase } from '../../../AST/VisitorBase';
 import { type ASTNode, ASTNodeKind } from '../../../AST/AST';
 import * as JackAST from '../AST';
+import { JackSpec } from '../JackSpec';
 
 export abstract class JackVisitorTopLevel<T> extends VisitorBase<T> {
   public override visit(node: ASTNode): T {
@@ -29,12 +30,61 @@ export abstract class JackVisitorAll<T> extends JackVisitorTopLevel<T> {
       case ASTNodeKind.CLASS:
       case ASTNodeKind.SUBROUTINE:
         return super.visit(node);
-
       default:
         throw new Error(`JackVisitorAll does not support node kind: ${ASTNodeKind[node.kind]}`);
     }
   }
 
-  protected abstract visitStatement(node: JackAST.JackStatementNode): T;
-  protected abstract visitExpression(node: JackAST.JackExpressionNode): T;
+  // --- Statement Dispatcher ---
+  protected visitStatement(node: JackAST.JackStatementNode): T {
+    switch (node.statementType) {
+      case JackSpec.LET: return this.visitLetStatement(node as JackAST.JackLetStatementNode);
+      case JackSpec.IF: return this.visitIfStatement(node as JackAST.JackIfStatementNode);
+      case JackSpec.WHILE: return this.visitWhileStatement(node as JackAST.JackWhileStatementNode);
+      case JackSpec.DO: return this.visitDoStatement(node as JackAST.JackDoStatementNode);
+      case JackSpec.RETURN: return this.visitReturnStatement(node as JackAST.JackReturnStatementNode);
+      default:
+        throw new Error(`Unknown statement type: ${(node as any).statementType}`);
+    }
+  }
+
+  // --- Expression/Term Dispatcher ---
+  protected visitExpression(node: JackAST.JackExpressionNode): T {
+    switch (node.type) {
+      case JackAST.ExpressionNodeTypes.BINARY_EXPRESSION:
+        return this.visitBinaryExpression(node as JackAST.JackBinaryExpressionNode);
+      case JackAST.ExpressionNodeTypes.INTEGER:
+        return this.visitIntegerLiteral(node as JackAST.JackIntegerLiteralNode);
+      case JackAST.ExpressionNodeTypes.STRING:
+        return this.visitStringLiteral(node as JackAST.JackStringLiteralNode);
+      case JackAST.ExpressionNodeTypes.KEYWORD:
+        return this.visitKeywordLiteral(node as JackAST.JackKeywordLiteralNode);
+      case JackAST.ExpressionNodeTypes.VAR_NAME:
+        return this.visitVariable(node as JackAST.JackVariableTermNode);
+      case JackAST.ExpressionNodeTypes.UNARY_OP:
+        return this.visitUnaryExpression(node as JackAST.JackUnaryTermNode);
+      case JackAST.ExpressionNodeTypes.PAREN_EXPRESSION:
+        return this.visitParenthesizedExpression(node as JackAST.JackParenthesizedExpressionNode);
+      case JackAST.ExpressionNodeTypes.SUBROUTINE_CALL:
+        return this.visitSubroutineCall(node as JackAST.JackSubroutineCallNode);
+      default:
+        throw new Error(`Unknown expression type: ${(node as any).type}`);
+    }
+  }
+
+  protected abstract visitLetStatement(node: JackAST.JackLetStatementNode): T;
+  protected abstract visitIfStatement(node: JackAST.JackIfStatementNode): T;
+  protected abstract visitWhileStatement(node: JackAST.JackWhileStatementNode): T;
+  protected abstract visitDoStatement(node: JackAST.JackDoStatementNode): T;
+  protected abstract visitReturnStatement(node: JackAST.JackReturnStatementNode): T;
+
+  protected abstract visitBinaryExpression(node: JackAST.JackBinaryExpressionNode): T;
+  protected abstract visitIntegerLiteral(node: JackAST.JackIntegerLiteralNode): T;
+  protected abstract visitStringLiteral(node: JackAST.JackStringLiteralNode): T;
+  protected abstract visitKeywordLiteral(node: JackAST.JackKeywordLiteralNode): T;
+  protected abstract visitVariable(node: JackAST.JackVariableTermNode): T;
+  protected abstract visitUnaryExpression(node: JackAST.JackUnaryTermNode): T;
+  protected abstract visitParenthesizedExpression(node: JackAST.JackParenthesizedExpressionNode): T;
+  protected abstract visitSubroutineCall(node: JackAST.JackSubroutineCallNode): T;
 }
+
