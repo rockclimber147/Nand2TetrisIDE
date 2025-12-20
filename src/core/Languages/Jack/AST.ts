@@ -20,6 +20,7 @@ export type SubroutineKind =
   | typeof JackSpec.CONSTRUCTOR
   | typeof JackSpec.FUNCTION
   | typeof JackSpec.METHOD;
+  
 export interface JackSubroutineNode extends ASTNode {
   kind: ASTNodeKind.SUBROUTINE;
   subroutineKind: SubroutineKind;
