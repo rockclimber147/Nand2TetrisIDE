@@ -11,7 +11,9 @@ export abstract class JackVisitorTopLevel<T> extends VisitorBase<T> {
       case ASTNodeKind.SUBROUTINE:
         return this.visitSubroutine(node as JackAST.JackSubroutineNode);
       case ASTNodeKind.VAR_DEC:
-        return this.visitVarDec(node as JackAST.JackClassVarDecNode | JackAST.JackSubroutineVarDecNode);
+        return this.visitVarDec(
+          node as JackAST.JackClassVarDecNode | JackAST.JackSubroutineVarDecNode,
+        );
       default:
         throw new Error(`JackVisitor does not support node kind: ${ASTNodeKind[node.kind]}`);
     }
@@ -19,7 +21,9 @@ export abstract class JackVisitorTopLevel<T> extends VisitorBase<T> {
 
   protected abstract visitClass(node: JackAST.JackClassNode): T;
   protected abstract visitSubroutine(node: JackAST.JackSubroutineNode): T;
-  protected abstract visitVarDec(node: JackAST.JackClassVarDecNode | JackAST.JackSubroutineVarDecNode): T;
+  protected abstract visitVarDec(
+    node: JackAST.JackClassVarDecNode | JackAST.JackSubroutineVarDecNode,
+  ): T;
 }
 
 export abstract class JackVisitorAll<T> extends JackVisitorTopLevel<T> {

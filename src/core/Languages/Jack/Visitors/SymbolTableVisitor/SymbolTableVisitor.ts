@@ -1,4 +1,9 @@
-import type { JackClassNode, JackClassVarDecNode, JackSubroutineNode, JackSubroutineVarDecNode } from '../../AST';
+import type {
+  JackClassNode,
+  JackClassVarDecNode,
+  JackSubroutineNode,
+  JackSubroutineVarDecNode,
+} from '../../AST';
 import { JackSpec } from '../../JackSpec';
 import { JackVisitorTopLevel } from '../JackVisitorBase';
 import { ClassLevelTable, GlobalSymbolTable } from './SymbolTable';
