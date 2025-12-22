@@ -34,11 +34,9 @@ export const SymbolTableVisualizer: React.FC<SymbolTableVisualizerProps> = ({ sc
 
 const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) => {
   const symbolNames = Object.keys(scope.symbols);
-  
+
   // Determine table columns based on the first symbol's metadata keys
-  const columns = symbolNames.length > 0 
-    ? Object.keys(scope.symbols[symbolNames[0]]) 
-    : [];
+  const columns = symbolNames.length > 0 ? Object.keys(scope.symbols[symbolNames[0]]) : [];
 
   return (
     <div className={`mb-8 ${depth > 0 ? 'ml-6 border-l border-slate-800 pl-6' : ''}`}>
@@ -49,11 +47,15 @@ const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) =
           <h3 className="font-mono text-sm font-bold text-blue-300 group-hover:text-blue-200 transition-colors">
             {scope.name}
           </h3>
-          {scope.metadata && Object.entries(scope.metadata).map(([key, val]) => (
-            <span key={key} className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 border border-slate-700">
-              {key}: <span className="text-slate-200">{val}</span>
-            </span>
-          ))}
+          {scope.metadata &&
+            Object.entries(scope.metadata).map(([key, val]) => (
+              <span
+                key={key}
+                className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 border border-slate-700"
+              >
+                {key}: <span className="text-slate-200">{val}</span>
+              </span>
+            ))}
         </div>
       </div>
 
@@ -64,16 +66,20 @@ const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) =
             <thead>
               <tr className="bg-[#323233] text-slate-400 uppercase text-[10px] tracking-tight">
                 <th className="px-4 py-2 font-semibold border-b border-black">Identifier</th>
-                {columns.map(col => (
-                  <th key={col} className="px-4 py-2 font-semibold border-b border-black">{col}</th>
+                {columns.map((col) => (
+                  <th key={col} className="px-4 py-2 font-semibold border-b border-black">
+                    {col}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
-              {symbolNames.map(name => (
+              {symbolNames.map((name) => (
                 <tr key={name} className="hover:bg-blue-500/5 transition-colors group">
-                  <td className="px-4 py-2 font-mono text-amber-200 group-hover:text-amber-100">{name}</td>
-                  {columns.map(col => (
+                  <td className="px-4 py-2 font-mono text-amber-200 group-hover:text-amber-100">
+                    {name}
+                  </td>
+                  {columns.map((col) => (
                     <td key={col} className="px-4 py-2 text-slate-300 font-mono">
                       {formatValue(scope.symbols[name][col])}
                     </td>

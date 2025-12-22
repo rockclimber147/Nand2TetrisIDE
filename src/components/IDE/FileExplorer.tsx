@@ -57,7 +57,7 @@ export const FileExplorer = ({
     }
   };
 
-return (
+  return (
     <div className="flex flex-col h-full select-none border-r border-black/20 bg-[#252526]">
       <div className="flex items-center justify-between p-3 shrink-0">
         <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
@@ -73,7 +73,11 @@ return (
             <FilePlus size={16} className="text-slate-400" />
           </button>
 
-          <button onClick={onSave} className="p-1 hover:bg-slate-700 rounded transition-colors" title="Download Project (ZIP)">
+          <button
+            onClick={onSave}
+            className="p-1 hover:bg-slate-700 rounded transition-colors"
+            title="Download Project (ZIP)"
+          >
             <Download size={16} className="text-slate-400" />
           </button>
 
@@ -125,27 +129,27 @@ return (
                 onClick={() => onFileSelect(fileName)}
                 className={`
                   flex items-center justify-between px-4 py-1.5 cursor-pointer text-sm transition-colors
-                  ${isActive 
-                    ? 'bg-[#37373d] text-white' 
-                    : hasError 
-                      ? 'text-red-400 hover:bg-[#2a2d2e]' 
-                      : 'text-slate-400 hover:bg-[#2a2d2e] hover:text-slate-200'}
+                  ${
+                    isActive
+                      ? 'bg-[#37373d] text-white'
+                      : hasError
+                        ? 'text-red-400 hover:bg-[#2a2d2e]'
+                        : 'text-slate-400 hover:bg-[#2a2d2e] hover:text-slate-200'
+                  }
                 `}
               >
                 <div className="flex items-center gap-2 truncate">
-                  <FileCode 
-                    size={14} 
+                  <FileCode
+                    size={14}
                     className={
                       hasError ? 'text-red-500' : isActive ? 'text-blue-400' : 'text-slate-500'
-                    } 
+                    }
                   />
                   <span className="truncate">{fileName}</span>
                 </div>
-                
+
                 {/* Visual indicator for errors (small dot) */}
-                {hasError && (
-                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 ml-2" />
-                )}
+                {hasError && <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 ml-2" />}
               </div>
             );
           })

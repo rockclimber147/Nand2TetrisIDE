@@ -3,7 +3,7 @@ import { JackSpec } from '../../JackSpec';
 import { BaseSymbolTable } from '../../../../SymbolTable/SymbolTableBase';
 import type { SymbolScope, SymbolMetadata } from '../../../../SymbolTable/types';
 
-export class GlobalSymbolTable extends BaseSymbolTable{
+export class GlobalSymbolTable extends BaseSymbolTable {
   private classes = new Map<string, ClassLevelTable>();
 
   public addClass(className: string): ClassLevelTable {
@@ -105,7 +105,7 @@ export class GlobalSymbolTable extends BaseSymbolTable{
     }
   }
 
-public toVisual(): SymbolScope {
+  public toVisual(): SymbolScope {
     const children: Record<string, SymbolScope> = {};
     this.classes.forEach((table, name) => {
       if (!table.getBuiltin()) {
@@ -114,9 +114,9 @@ public toVisual(): SymbolScope {
     });
 
     return {
-      name: "Jack Project",
+      name: 'Jack Project',
       symbols: {},
-      children
+      children,
     };
   }
 }
@@ -187,9 +187,9 @@ export class ClassLevelTable {
 
     return {
       name: this.className,
-      metadata: { scope: "class" },
+      metadata: { scope: 'class' },
       symbols,
-      children
+      children,
     };
   }
 }
@@ -238,7 +238,7 @@ export class SubroutineLevelTable {
       name: this.subroutineName,
       metadata: { category: this.category },
       symbols,
-      children: {} 
+      children: {},
     };
   }
 }
