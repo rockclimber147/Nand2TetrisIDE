@@ -16,8 +16,9 @@ import { JackVisitorAll } from '../JackVisitorBase';
 import { GlobalSymbolTable } from '../SymbolTableVisitor/SymbolTable';
 import { CompilerError } from '../../../../Errors';
 
-export class SemanticVisitor extends JackVisitorAll<void> {
+export class JackSemanticVisitor extends JackVisitorAll<void> {
   private errors: CompilerError[] = [];
+  private newErrors: CompilerError[] = [];
   private currentClassName: string = '';
   private currentSubroutineName: string = '';
   constructor(private table: GlobalSymbolTable) {
@@ -28,11 +29,15 @@ export class SemanticVisitor extends JackVisitorAll<void> {
     return this.errors;
   }
 
+  public getErrorsForCurrentPass() {
+    return [...this.newErrors];
+  }
+
   protected override visitClass(node: JackClassNode): void {
     this.currentClassName = node.name;
-
+    this.newErrors = [];
     node.subroutines.forEach((subroutine) => this.visit(subroutine));
-
+    this.errors.push(...this.newErrors);
     this.currentClassName = '';
   }
 
@@ -51,7 +56,7 @@ export class SemanticVisitor extends JackVisitorAll<void> {
       this.currentClassName,
       this.currentSubroutineName,
     );
-    if (error) this.errors.push(new CompilerError(node.startToken, error));
+    if (error) this.newErrors.push(new CompilerError(node.startToken, error));
     if (node.indexExpression) this.visit(node.indexExpression);
     this.visit(node.valueExpression);
   }
@@ -80,7 +85,7 @@ export class SemanticVisitor extends JackVisitorAll<void> {
       this.currentClassName,
       this.currentSubroutineName,
     );
-    if (error) this.errors.push(new CompilerError(node.startToken, error));
+    if (error) this.newErrors.push(new CompilerError(node.startToken, error));
     if (node.arrayIndex) {
       this.visit(node.arrayIndex);
     }
@@ -98,7 +103,7 @@ export class SemanticVisitor extends JackVisitorAll<void> {
       this.currentSubroutineName,
       node.target,
     );
-    if (error) this.errors.push(new CompilerError(node.startToken, error));
+    if (error) this.newErrors.push(new CompilerError(node.startToken, error));
     node.arguments?.forEach((argExpr) => this.visit(argExpr));
   }
 

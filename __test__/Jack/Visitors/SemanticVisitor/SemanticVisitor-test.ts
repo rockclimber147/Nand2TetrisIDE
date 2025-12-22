@@ -3,31 +3,31 @@ import { GenericTokenizer } from '../../../../src/core/Tokenizer';
 import { JackTokenMatcher } from '../../../../src/core/Languages/Jack/JackSpec';
 import { JackParser } from '../../../../src/core/Languages/Jack/Parser';
 import { SymbolTableVisitor } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTableVisitor';
-import { SemanticVisitor } from '../../../../src/core/Languages/Jack/Visitors/SemanticVisitor/SemanticVisitor';
+import { JackSemanticVisitor } from '../../../../src/core/Languages/Jack/Visitors/SemanticVisitor/SemanticVisitor';
 import { SymbolKind } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/types';
 import { ASTNode } from '../../../../src/core/AST/AST';
 import { GlobalSymbolTable } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTable';
 
 describe('SemanticVisitor', () => {
   const validateSource = (sources: string[]) => {
-    const asts: ASTNode[] = []
-    sources.forEach(source => {
-        const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
-        const tokens = tokenizer.tokenize();
-        const parser = new JackParser(tokens);
-        asts.push(parser.parse());
-    })
+    const asts: ASTNode[] = [];
+    sources.forEach((source) => {
+      const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
+      const tokens = tokenizer.tokenize();
+      const parser = new JackParser(tokens);
+      asts.push(parser.parse());
+    });
 
     const stVisitor = new SymbolTableVisitor();
     let globalTable = new GlobalSymbolTable();
-    asts.forEach(ast => globalTable = stVisitor.visit(ast))
+    asts.forEach((ast) => (globalTable = stVisitor.visit(ast)));
 
-    const semanticVisitor = new SemanticVisitor(globalTable);
-    asts.forEach(ast => semanticVisitor.visit(ast))
-    
+    const semanticVisitor = new JackSemanticVisitor(globalTable);
+    asts.forEach((ast) => semanticVisitor.visit(ast));
+
     return semanticVisitor.getErrors();
   };
-test('should report error for undefined variables', () => {
+  test('should report error for undefined variables', () => {
     const source = `
       class Main {
         static int x;
@@ -64,7 +64,9 @@ test('should report error for undefined variables', () => {
       }
     `;
     const errors = validateSource([source]);
-    expect(errors.some(e => e.message.includes("cannot be accessed from a static function"))).toBe(true);
+    expect(
+      errors.some((e) => e.message.includes('cannot be accessed from a static function')),
+    ).toBe(true);
   });
 
   test('should validate subroutine calls on current class', () => {

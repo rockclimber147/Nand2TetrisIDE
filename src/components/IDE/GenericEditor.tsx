@@ -8,15 +8,15 @@ interface GenericEditorProps {
   value?: string;
   onChange?: (value: string | undefined) => void;
   path?: string;
-  errors: CompilerError[];
+  errors: Record<string, CompilerError[]>;
 }
 
 export const GenericEditor = ({ spec, value, onChange, path, errors }: GenericEditorProps) => {
   const monacoRef = useRef<Monaco | null>(null);
   const handleBeforeMount = (monaco: Monaco) => {
-    if (!monaco.languages.getLanguages().some((lang: { id: string; }) => lang.id === spec.id)) {
+    if (!monaco.languages.getLanguages().some((lang: { id: string }) => lang.id === spec.id)) {
       monaco.languages.register({ id: spec.id, extensions: spec.extensions });
-      
+
       monaco.languages.setMonarchTokensProvider(spec.id, spec.tokens);
       monaco.languages.setLanguageConfiguration(spec.id, spec.configuration);
     }
@@ -28,7 +28,9 @@ export const GenericEditor = ({ spec, value, onChange, path, errors }: GenericEd
       const model = monaco.editor.getModel(monaco.Uri.file(path));
 
       if (model) {
-        const markers = errors.map(err => ({
+        const fileSpecificErrors = errors[path] || [];
+
+        const markers = fileSpecificErrors.map((err) => ({
           startLineNumber: err.line,
           startColumn: err.column,
           endLineNumber: err.line,

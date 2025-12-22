@@ -4,7 +4,7 @@ import { JackSpec } from './JackSpec';
 export const JackMonacoSpec: MonacoLanguageSpec = {
   id: 'jack',
   extensions: ['.jack'],
-  
+
   // 1. Language Configuration (Editor behavior)
   configuration: {
     comments: {
@@ -39,13 +39,16 @@ export const JackMonacoSpec: MonacoLanguageSpec = {
 
     tokenizer: {
       root: [
-        [/[a-zA-Z_]\w*/, {
-          cases: {
-            '@typeKeywords': 'type',
-            '@keywords': 'keyword',
-            '@default': 'identifier'
-          }
-        }],
+        [
+          /[a-zA-Z_]\w*/,
+          {
+            cases: {
+              '@typeKeywords': 'type',
+              '@keywords': 'keyword',
+              '@default': 'identifier',
+            },
+          },
+        ],
 
         // Whitespace and Comments
         { include: '@whitespace' },
@@ -56,12 +59,15 @@ export const JackMonacoSpec: MonacoLanguageSpec = {
 
         // Brackets and Symbols
         [/[{}()\[\]]/, '@brackets'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'operator',
-            '@default': ''
-          }
-        }],
+        [
+          /@symbols/,
+          {
+            cases: {
+              '@operators': 'operator',
+              '@default': '',
+            },
+          },
+        ],
       ],
 
       // State handling for multi-line strings/comments
@@ -79,8 +85,8 @@ export const JackMonacoSpec: MonacoLanguageSpec = {
       comment: [
         [/[^\/*]+/, 'comment'],
         [/\*\//, 'comment', '@pop'],
-        [/[\/*]/, 'comment']
+        [/[\/*]/, 'comment'],
       ],
     },
-  }
+  },
 };

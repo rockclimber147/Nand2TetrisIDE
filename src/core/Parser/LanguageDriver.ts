@@ -1,10 +1,10 @@
-import { CompilerError } from "../Errors";
+import { CompilerError } from '../Errors';
 
 export interface CompilationResult<T> {
   ast: T | null;
   errors: CompilerError[];
 }
 
-export abstract class LanguageDriver<T_AST> {
-  abstract compile(source: string): CompilationResult<T_AST>;
+export abstract class LanguageDriver {
+  abstract compileProject(files: Record<string, string>): Record<string, CompilerError[]>;
 }

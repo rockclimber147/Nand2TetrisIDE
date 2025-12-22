@@ -10,7 +10,13 @@ interface FileExplorerProps {
   onSave: () => void;
 }
 
-export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave }: FileExplorerProps) => {
+export const FileExplorer = ({
+  files,
+  activeFile,
+  onFileSelect,
+  onUpload,
+  onSave,
+}: FileExplorerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFolderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +26,7 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
     const promises = Array.from(uploadedFiles).map(async (file) => {
       const extension = file.name.split('.').pop()?.toLowerCase();
       const validExtensions = ['jack', 'hdl', 'vm', 'asm'];
-      
+
       if (validExtensions.includes(extension || '')) {
         const text = await file.text();
         newFiles[file.name] = text;
@@ -33,15 +39,15 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
   };
 
   return (
-<div className="flex flex-col h-full select-none border-r border-black/20">
+    <div className="flex flex-col h-full select-none border-r border-black/20">
       <div className="flex items-center justify-between p-3 shrink-0">
         <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
           Explorer
         </span>
-        
+
         <div className="flex gap-1">
           {/* SAVE BUTTON */}
-          <button 
+          <button
             onClick={onSave}
             disabled={files.length === 0}
             className="p-1 hover:bg-slate-700 rounded transition-colors disabled:opacity-30"
@@ -51,7 +57,7 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
           </button>
 
           {/* UPLOAD BUTTON */}
-          <button 
+          <button
             onClick={() => fileInputRef.current?.click()}
             className="p-1 hover:bg-slate-700 rounded transition-colors"
             title="Upload Folder"
@@ -61,12 +67,12 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
         </div>
 
         <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFolderUpload}
-        className="hidden"
-        multiple
-        {...{ webkitdirectory: "", directory: "" } as any}
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFolderUpload}
+          className="hidden"
+          multiple
+          {...({ webkitdirectory: '', directory: '' } as any)}
         />
       </div>
 
@@ -74,7 +80,7 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
         {files.length === 0 ? (
           <div className="px-4 py-8 text-center">
             <p className="text-xs text-slate-600 italic">No files loaded.</p>
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
               className="mt-3 text-xs text-blue-400 hover:underline"
             >
@@ -90,12 +96,14 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave
                 onClick={() => onFileSelect(fileName)}
                 className={`
                   flex items-center gap-2 px-4 py-1.5 cursor-pointer text-sm transition-colors
-                  ${isActive 
-                    ? 'bg-[#37373d] text-white' 
-                    : 'text-slate-400 hover:bg-[#2a2d2e] hover:text-slate-200'}
+                  ${
+                    isActive
+                      ? 'bg-[#37373d] text-white'
+                      : 'text-slate-400 hover:bg-[#2a2d2e] hover:text-slate-200'
+                  }
                 `}
               >
-                <FileCode size={14} className={isActive ? "text-blue-400" : "text-slate-500"} />
+                <FileCode size={14} className={isActive ? 'text-blue-400' : 'text-slate-500'} />
                 <span className="truncate">{fileName}</span>
               </div>
             );

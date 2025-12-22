@@ -8,17 +8,20 @@ export const registerJackLanguage = (monaco: any) => {
     keywords: Array.from(JackSpec.KEYWORDS),
     typeKeywords: Array.from(JackSpec.TYPES),
     operators: Array.from(JackSpec.OP),
-    symbols:  /[{}()\[\].,;+\-*/&|<>=~]/,
+    symbols: /[{}()\[\].,;+\-*/&|<>=~]/,
 
     tokenizer: {
       root: [
-        [/[a-zA-Z_]\w*/, {
-          cases: {
-            '@typeKeywords': 'type',
-            '@keywords': 'keyword',
-            '@default': 'identifier'
-          }
-        }],
+        [
+          /[a-zA-Z_]\w*/,
+          {
+            cases: {
+              '@typeKeywords': 'type',
+              '@keywords': 'keyword',
+              '@default': 'identifier',
+            },
+          },
+        ],
         { include: '@whitespace' },
 
         // Numbers
@@ -30,12 +33,15 @@ export const registerJackLanguage = (monaco: any) => {
 
         // Symbols and Operators
         [/[{}()\[\]]/, '@brackets'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'operator',
-            '@default': ''
-          }
-        }],
+        [
+          /@symbols/,
+          {
+            cases: {
+              '@operators': 'operator',
+              '@default': '',
+            },
+          },
+        ],
       ],
 
       string: [
@@ -52,7 +58,7 @@ export const registerJackLanguage = (monaco: any) => {
       comment: [
         [/[^\/*]+/, 'comment'],
         [/\*\//, 'comment', '@pop'],
-        [/[\/*]/, 'comment']
+        [/[\/*]/, 'comment'],
       ],
     },
   });

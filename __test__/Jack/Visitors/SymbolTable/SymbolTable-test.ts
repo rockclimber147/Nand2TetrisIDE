@@ -1,7 +1,5 @@
 import { describe, expect, test, beforeEach } from 'vitest';
-import {
-  GlobalSymbolTable,
-} from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTable';
+import { GlobalSymbolTable } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTable';
 import { SymbolKind } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/types';
 import { JackSpec } from '../../../../src/core/Languages/Jack/JackSpec';
 
