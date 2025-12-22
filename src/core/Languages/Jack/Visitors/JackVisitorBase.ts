@@ -36,6 +36,7 @@ export abstract class JackVisitorAll<T> extends JackVisitorTopLevel<T> {
         return this.visitExpression(node as JackAST.JackExpressionNode);
       case ASTNodeKind.CLASS:
       case ASTNodeKind.SUBROUTINE:
+      case ASTNodeKind.VAR_DEC:
         return super.visit(node);
       default:
         throw new Error(`JackVisitorAll does not support node kind: ${ASTNodeKind[node.kind]}`);
