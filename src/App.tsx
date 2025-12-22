@@ -1,35 +1,44 @@
-import { useState } from 'react';
+import { 
+  Group, 
+  Panel, 
+  Separator 
+} from "react-resizable-panels";
+import { JackEditor } from "./components/Editor/JackEditor";
 
-import './App.css';
-
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
-    <div className="h-screen w-screen bg-slate-900 flex flex-col items-center justify-center gap-8">
+    <div className="h-screen w-screen flex flex-col bg-[#1e1e1e] text-slate-300">
       
-      <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-        Tailwind + Jack IDE
-      </h1>
-
-      <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 flex flex-col items-center">
-        <p className="text-slate-300 mb-6 font-mono">
-          Testing Tailwind installation...
-        </p>
-        
-        <button 
-          onClick={() => setCount((count) => count + 1)}
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all text-white rounded-lg font-bold shadow-lg"
-        >
-          Count is: {count}
-        </button>
+      {/* Top Bar */}
+      <div className="h-9 bg-[#323233] flex items-center px-4 text-xs border-b border-black shrink-0">
+        <span className="text-blue-400 font-bold tracking-tight">JACK COMPILER</span>
+        <span className="mx-2 text-slate-600">|</span>
+        <span className="text-slate-400">File</span>
       </div>
 
-      <p className="text-slate-500 text-sm italic">
-        If the background is dark and the button is blue, Tailwind is working!
-      </p>
+      {/* Main Content Area */}
+      <main className="flex-1 h-full">
+        <Group className="h-full">
+          
+          <Panel defaultSize={300} collapsible minSize={100} className="bg-[#252526] flex flex-col">
+            <div className="p-3 text-[11px] uppercase tracking-wider font-bold text-slate-500">
+              Explorer
+            </div>
+            <div className="flex-1 p-4 border-t border-slate-800 italic text-slate-600 text-xs">
+              Drag files here to begin...
+            </div>
+          </Panel>
+          <Separator 
+            className="w-1 bg-blue-900 transition-colors duration-200 
+                      hover:bg-blue-600 active:bg-blue-500 
+                      outline-none focus:outline-none" 
+          />
+          <Panel className="flex flex-col min-w-0">
+              <JackEditor />
+          </Panel>
+
+        </Group>
+      </main>
     </div>
   );
 }
-
-export default App;
