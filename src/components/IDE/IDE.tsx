@@ -64,34 +64,30 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
     setActiveFileName(name);
   };
 
-  useEffect(() => {
-    if (!activeFileName || !files[activeFileName]) return;
+    useEffect(() => {
+        if (!activeFileName || !files[activeFileName]) return;
+        const result = driver.compileProject(files);
+        setAllErrors(result.errors);
+        
+        if (result.trees && result.trees[activeFileName]) {
+        setActiveTree(result.trees[activeFileName]);
+        } else {
+        setActiveTree(null);
+        }
+    }, [files, activeFileName, driver]);
 
-    const result = driver.compileProject(files);
+    // Derived error set for Sidebar
+    const errorFiles = new Set(
+        Object.keys(allErrors).filter(k => allErrors[k].length > 0)
+    );
 
-    setAllErrors(result.errors);
-
-    // Set the tree for the currently open file
-    if (result.trees && result.trees[activeFileName]) {
-      setActiveTree(result.trees[activeFileName]);
-    } else {
-      setActiveTree(null);
-    }
-  }, [files, activeFileName, driver]);
-
-  return (
+return (
     <div className="h-full w-full flex flex-col bg-[#1e1e1e] text-slate-300">
-      {/* Top Bar */}
-      <div className="h-9 bg-[#323233] flex items-center px-4 text-xs border-b border-black shrink-0">
-        <span className="text-blue-400 font-bold tracking-tight uppercase">{title}</span>
-        <span className="mx-2 text-slate-600">|</span>
-        <span className="text-slate-400">{activeFileName || 'No file open'}</span>
-      </div>
+      {/* Top Bar ... */}
 
-      {/* Main Content */}
       <main className="flex-1 min-h-0">
         <Group className="h-full">
-          <Panel defaultSize={200} collapsible minSize={150} className="bg-[#252526]">
+          <Panel defaultSize={20} minSize={15} className="bg-[#252526]">
             <FileExplorer
               files={Object.keys(files)}
               activeFile={activeFileName}
@@ -102,20 +98,49 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
             />
           </Panel>
 
-          <Separator className="w-1 bg-blue-900 transition-colors hover:bg-blue-600 active:bg-blue-500 outline-none cursor-col-resize" />
+          <Separator className="w-1 bg-black/20 hover:bg-blue-600 transition-colors cursor-col-resize" />
 
           <Panel className="flex flex-col min-w-0">
             {activeFileName ? (
-              <GenericEditor
-                spec={languageSpec}
-                path={activeFileName}
-                value={files[activeFileName]}
-                onChange={handleCodeChange}
-                errors={allErrors}
-              />
+              <>
+                {/* TAB BAR */}
+                <div className="flex bg-[#252526] border-b border-black h-9">
+                  <button
+                    onClick={() => setActiveTab('editor')}
+                    className={`px-4 text-xs flex items-center gap-2 border-r border-black transition-colors ${
+                      activeTab === 'editor' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
+                    }`}
+                  >
+                    Code
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('tree')}
+                    className={`px-4 text-xs flex items-center gap-2 border-r border-black transition-colors ${
+                      activeTab === 'tree' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
+                    }`}
+                  >
+                    Tree Visualizer
+                  </button>
+                </div>
+
+                {/* TAB CONTENT */}
+                <div className="flex-1 min-h-0">
+                  {activeTab === 'editor' ? (
+                    <GenericEditor
+                      spec={languageSpec}
+                      path={activeFileName}
+                      value={files[activeFileName]}
+                      onChange={handleCodeChange}
+                      errors={allErrors}
+                    />
+                  ) : (
+                    <ASTVisualizer root={activeTree} />
+                  )}
+                </div>
+              </>
             ) : (
               <div className="flex-1 flex items-center justify-center text-slate-500 italic text-sm">
-                Upload a folder to begin editing
+                Select a file to begin
               </div>
             )}
           </Panel>
