@@ -24,6 +24,15 @@ export class GlobalSymbolTable {
     this.classes.set(className, table);
     return table;
   }
+
+  public validateVar(name: string, fromClass: string, fromSubroutine: string) {
+
+  }
+
+  public validateSubroutineCall(name: string, fromClass: string, fromSubroutine: string) {
+
+  }
+
 }
 
 export interface ClassVarEntry {
@@ -56,6 +65,13 @@ export class ClassLevelTable {
     });
   }
 
+  public lookupVar(name: string): ClassVarEntry {
+    if (!this.vars.has(name)) {
+      throw new Error(`Var ${name} does not exist in class ${this.className}`);
+    }
+    return this.vars.get(name)!;
+  }
+
   public defineSubroutine(name: string): SubroutineLevelTable {
     if (this.subroutines.has(name)) {
       throw new Error(`Subroutine '${name}' is already defined in class ${this.className}.`);
@@ -65,12 +81,6 @@ export class ClassLevelTable {
     return table;
   }
 
-  public lookupVar(name: string): ClassVarEntry {
-    if (!this.vars.has(name)) {
-      throw new Error(`Var ${name} does not exist in class ${this.className}`);
-    }
-    return this.vars.get(name)!;
-  }
 
   public lookupSubroutine(name: string): SubroutineLevelTable {
     if (!this.subroutines.has(name)) {
