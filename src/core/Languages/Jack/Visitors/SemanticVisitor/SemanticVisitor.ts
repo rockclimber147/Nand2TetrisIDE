@@ -5,9 +5,6 @@ import type {
   JackDoStatementNode,
   JackReturnStatementNode,
   JackBinaryExpressionNode,
-  JackIntegerLiteralNode,
-  JackStringLiteralNode,
-  JackKeywordLiteralNode,
   JackVariableTermNode,
   JackUnaryTermNode,
   JackParenthesizedExpressionNode,
@@ -48,55 +45,53 @@ export class SemanticVisitor extends JackVisitorAll<void> {
     this.currentSubroutineName = '';
   }
 
-  protected visitLetStatement(node: JackLetStatementNode): CompilerError[] {
-    throw new Error('Method not implemented.');
+  protected visitLetStatement(node: JackLetStatementNode): void {
+    const error = this.table.validateVar(node.varName, this.currentClassName, this.currentSubroutineName)
+    if (error) this.errors.push(new CompilerError(node.startToken, error))
+    if (node.indexExpression)
+      this.visit(node.indexExpression);
+    this.visit(node.valueExpression)
+  }
+  protected visitIfStatement(node: JackIfStatementNode): void {
+    this.visit(node.condition);
+    node.ifStatements?.forEach(statement => this.visit(statement))
+    node.elseStatements?.forEach(statement => this.visit(statement))
+  }
+  protected visitWhileStatement(node: JackWhileStatementNode): void {
+    this.visit(node.condition);
+    node.statements?.forEach(statement => this.visit(statement))
+  }
+  protected visitDoStatement(node: JackDoStatementNode): void {
+    this.visit(node.subroutineCall)
+  }
+  protected visitReturnStatement(node: JackReturnStatementNode): void {
+    if (node.expression) this.visit(node.expression);
+  }
+  protected visitBinaryExpression(node: JackBinaryExpressionNode): void {
+    this.visit(node.term);
+    node.nextTerms.forEach(expr => this.visit(expr.term))
+  }
+  protected visitVariable(node: JackVariableTermNode): void {
+    const error = this.table.validateVar(node.name, this.currentClassName, this.currentSubroutineName)
+    if (error) this.errors.push(new CompilerError(node.startToken, error))
+    if (node.arrayIndex) {
+      this.visit(node.arrayIndex)
+    }
+  }
+  protected visitUnaryExpression(node: JackUnaryTermNode): void {
+    this.visit(node.term)
+  }
+  protected visitParenthesizedExpression(node: JackParenthesizedExpressionNode): void {
+    this.visit(node.expression)
+  }
+  protected visitSubroutineCall(node: JackSubroutineCallNode): void {
+    const error = this.table.validateSubroutineCall(node.methodName, this.currentClassName, this.currentSubroutineName, node.target)
+    if (error) this.errors.push(new CompilerError(node.startToken, error))
+    node.arguments?.forEach(argExpr => this.visit(argExpr))
   }
 
-  protected visitIfStatement(node: JackIfStatementNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitWhileStatement(node: JackWhileStatementNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitDoStatement(node: JackDoStatementNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitReturnStatement(node: JackReturnStatementNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitBinaryExpression(node: JackBinaryExpressionNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitIntegerLiteral(node: JackIntegerLiteralNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitStringLiteral(node: JackStringLiteralNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitKeywordLiteral(node: JackKeywordLiteralNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitVariable(node: JackVariableTermNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitUnaryExpression(node: JackUnaryTermNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitParenthesizedExpression(node: JackParenthesizedExpressionNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
-
-  protected visitSubroutineCall(node: JackSubroutineCallNode): CompilerError[] {
-    throw new Error('Method not implemented.');
-  }
+  protected visitIntegerLiteral(): void {}
+  protected visitStringLiteral(): void {}
+  protected visitKeywordLiteral(): void {}
+    protected visitVarDec(): void {}
 }

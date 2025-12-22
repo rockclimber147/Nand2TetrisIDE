@@ -1,4 +1,4 @@
-import type { JackClassNode, JackSubroutineNode } from '../../AST';
+import type { JackClassNode, JackClassVarDecNode, JackSubroutineNode, JackSubroutineVarDecNode } from '../../AST';
 import { JackSpec } from '../../JackSpec';
 import { JackVisitorTopLevel } from '../JackVisitorBase';
 import { ClassLevelTable, GlobalSymbolTable } from './SymbolTable';
@@ -50,6 +50,10 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
       });
     });
 
+    return this.table;
+  }
+
+  protected visitVarDec(_node: JackClassVarDecNode | JackSubroutineVarDecNode): GlobalSymbolTable {
     return this.table;
   }
 }
