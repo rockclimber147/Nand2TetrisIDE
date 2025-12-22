@@ -1,7 +1,7 @@
 import type { JackClassNode, JackSubroutineNode } from '../../AST';
 import { JackSpec } from '../../JackSpec';
 import { JackVisitorTopLevel } from '../JackVisitorBase';
-import { ClassLevelTable, GlobalSymbolTable} from './SymbolTable';
+import { ClassLevelTable, GlobalSymbolTable } from './SymbolTable';
 import { SymbolKind } from './types';
 
 export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
@@ -19,8 +19,7 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
 
     node.classVarDecs.forEach((varDecNode) => {
       varDecNode.names.forEach((name) => {
-        const kind =
-          varDecNode.varKind === JackSpec.STATIC ? SymbolKind.STATIC : SymbolKind.FIELD;
+        const kind = varDecNode.varKind === JackSpec.STATIC ? SymbolKind.STATIC : SymbolKind.FIELD;
         classTable.defineVar(name, varDecNode.type, kind);
       });
     });

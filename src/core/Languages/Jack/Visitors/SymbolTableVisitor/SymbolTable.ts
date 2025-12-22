@@ -13,9 +13,9 @@ export class GlobalSymbolTable {
     return table;
   }
 
-public validateVar(name: string, fromClass: string, fromSubroutine: string): string | null {
+  public validateVar(name: string, fromClass: string, fromSubroutine: string): string | null {
     const symbol = this.findVar(name, fromClass, fromSubroutine);
-    
+
     if (!symbol) {
       return `Variable '${name}' is not defined.`;
     }
@@ -29,14 +29,65 @@ public validateVar(name: string, fromClass: string, fromSubroutine: string): str
       }
     }
 
-    return null; // Valid
+    return null;
   }
 
-  public validateSubroutineCall(name: string, fromClass: string, fromSubroutine: string) {
+  public validateSubroutineCall(
+    methodName: string,
+    fromClass: string,
+    fromSubroutine: string,
+    target?: string, // The 'x' in x.y()
+  ): string | null {
+    const callerClass = this.classes.get(fromClass);
+    const callerSub = callerClass?.lookupSubroutine(fromSubroutine);
 
+    let targetClassName: string;
+    let isInstanceCall = false;
+
+    if (!target) {
+      if (callerSub?.category === JackSpec.FUNCTION) {
+        return `Cannot call method '${methodName}' from a static function without an instance.`;
+      }
+      targetClassName = fromClass;
+      isInstanceCall = true;
+    } else {
+      const targetVar = this.findVar(target, fromClass, fromSubroutine);
+
+      if (targetVar) {
+        targetClassName = targetVar.type;
+        isInstanceCall = true;
+      } else {
+        targetClassName = target;
+        isInstanceCall = false;
+      }
+    }
+
+    const targetClassTable = this.classes.get(targetClassName);
+    if (!targetClassTable) {
+      return `Class '${targetClassName}' is not defined.`;
+    }
+
+    try {
+      const targetSub = targetClassTable.lookupSubroutine(methodName);
+
+      if (isInstanceCall && targetSub.category === JackSpec.FUNCTION) {
+        return `Function '${methodName}' must be called using the class name, not an instance.`;
+      }
+      if (!isInstanceCall && targetSub.category === JackSpec.METHOD) {
+        return `Method '${methodName}' must be called using an instance, not the class name.`;
+      }
+    } catch (e) {
+      return `Subroutine '${methodName}' does not exist in class '${targetClassName}'.`;
+    }
+
+    return null;
   }
 
-  private findVar(name: string, fromClass: string, fromSubroutine: string): SymbolEntry | undefined {
+  private findVar(
+    name: string,
+    fromClass: string,
+    fromSubroutine: string,
+  ): SymbolEntry | undefined {
     const classTable = this.classes.get(fromClass);
     if (!classTable) return undefined;
 
@@ -92,7 +143,6 @@ export class ClassLevelTable {
     return table;
   }
 
-
   public lookupSubroutine(name: string): SubroutineLevelTable {
     if (!this.subroutines.has(name)) {
       throw new Error(`Method/Function ${name} does not exist in class ${this.className}`);
@@ -108,7 +158,7 @@ export class SubroutineLevelTable {
   constructor(
     public readonly subroutineName: string,
     public readonly className: string,
-    public readonly category: string
+    public readonly category: string,
   ) {}
 
   public defineVar(name: string, type: string, kind: SubroutineVarKind): void {

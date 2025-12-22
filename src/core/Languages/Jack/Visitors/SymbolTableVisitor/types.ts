@@ -1,4 +1,4 @@
-import { JackSpec } from "../../JackSpec";
+import { JackSpec } from '../../JackSpec';
 export const SymbolKind = {
   STATIC: 'STATIC',
   FIELD: 'FIELD',
@@ -6,12 +6,12 @@ export const SymbolKind = {
   VAR: 'VAR',
 } as const;
 
-export type SymbolKind = typeof SymbolKind[keyof typeof SymbolKind];
+export type SymbolKind = (typeof SymbolKind)[keyof typeof SymbolKind];
 export type ClassVarKind = typeof SymbolKind.STATIC | typeof SymbolKind.FIELD;
 export type SubroutineVarKind = typeof SymbolKind.ARG | typeof SymbolKind.VAR;
-export type SubroutineKind = 
-  | typeof JackSpec.CONSTRUCTOR 
-  | typeof JackSpec.METHOD 
+export type SubroutineKind =
+  | typeof JackSpec.CONSTRUCTOR
+  | typeof JackSpec.METHOD
   | typeof JackSpec.FUNCTION;
 
 export interface SymbolEntry {

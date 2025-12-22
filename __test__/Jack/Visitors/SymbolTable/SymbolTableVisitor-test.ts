@@ -17,11 +17,11 @@ describe('SymbolTableVisitor', () => {
   };
 
   const getAstFromSource = (source: string) => {
-      const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
-      const tokens = tokenizer.tokenize();
-      const parser = new JackParser(tokens);
-      return parser.parse();
-  }
+    const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
+    const tokens = tokenizer.tokenize();
+    const parser = new JackParser(tokens);
+    return parser.parse();
+  };
 
   test('should populate class-level fields and statics', () => {
     const source = `
@@ -127,48 +127,48 @@ describe('SymbolTableVisitor', () => {
     expect(() => getTableFromSource(source)).toThrow(/already defined in class scope/);
   });
 
-    test("should be ok with multiple valid asts", () => {
-        const source1 = `
+  test('should be ok with multiple valid asts', () => {
+    const source1 = `
       class Square {
         field int x, y;
         static int count;
         function void main() {}
       }
     `;
-        const ast1 = getAstFromSource(source1);
+    const ast1 = getAstFromSource(source1);
 
-        const source2 = `
+    const source2 = `
       class Rectangle {
         field int width, height;
         static int rectCount;
         function void init() {}
       }
     `;
-        const ast2 = getAstFromSource(source2);
+    const ast2 = getAstFromSource(source2);
 
-        const visitor = new SymbolTableVisitor();
+    const visitor = new SymbolTableVisitor();
 
-        // Visit first AST
-        visitor.visit(ast1);
-        // Visit second AST
-        const globalTable = visitor.visit(ast2);
+    // Visit first AST
+    visitor.visit(ast1);
+    // Visit second AST
+    const globalTable = visitor.visit(ast2);
 
-        // 1. Verify Square still exists and is correct
-        const squareTable = (globalTable as any).classes.get("Square");
-        expect(squareTable).toBeDefined();
-        expect(squareTable.lookupVar("x").kind).toBe(SymbolKinds.FIELD);
-        expect(squareTable.lookupSubroutine("main")).toBeDefined();
+    // 1. Verify Square still exists and is correct
+    const squareTable = (globalTable as any).classes.get('Square');
+    expect(squareTable).toBeDefined();
+    expect(squareTable.lookupVar('x').kind).toBe(SymbolKinds.FIELD);
+    expect(squareTable.lookupSubroutine('main')).toBeDefined();
 
-        // 2. Verify Rectangle was added correctly
-        const rectTable = (globalTable as any).classes.get("Rectangle");
-        expect(rectTable).toBeDefined();
-        expect(rectTable.lookupVar("width")).toMatchObject({
-            kind: SymbolKinds.FIELD,
-            index: 0
-        });
-        expect(rectTable.lookupSubroutine("init")).toBeDefined();
-
-        // 3. Verify total class count
-        expect((globalTable as any).classes.size).toBe(2);
+    // 2. Verify Rectangle was added correctly
+    const rectTable = (globalTable as any).classes.get('Rectangle');
+    expect(rectTable).toBeDefined();
+    expect(rectTable.lookupVar('width')).toMatchObject({
+      kind: SymbolKinds.FIELD,
+      index: 0,
     });
+    expect(rectTable.lookupSubroutine('init')).toBeDefined();
+
+    // 3. Verify total class count
+    expect((globalTable as any).classes.size).toBe(2);
+  });
 });

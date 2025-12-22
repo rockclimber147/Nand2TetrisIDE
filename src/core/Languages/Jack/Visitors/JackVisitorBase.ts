@@ -38,11 +38,16 @@ export abstract class JackVisitorAll<T> extends JackVisitorTopLevel<T> {
   // --- Statement Dispatcher ---
   protected visitStatement(node: JackAST.JackStatementNode): T {
     switch (node.statementType) {
-      case JackSpec.LET: return this.visitLetStatement(node as JackAST.JackLetStatementNode);
-      case JackSpec.IF: return this.visitIfStatement(node as JackAST.JackIfStatementNode);
-      case JackSpec.WHILE: return this.visitWhileStatement(node as JackAST.JackWhileStatementNode);
-      case JackSpec.DO: return this.visitDoStatement(node as JackAST.JackDoStatementNode);
-      case JackSpec.RETURN: return this.visitReturnStatement(node as JackAST.JackReturnStatementNode);
+      case JackSpec.LET:
+        return this.visitLetStatement(node as JackAST.JackLetStatementNode);
+      case JackSpec.IF:
+        return this.visitIfStatement(node as JackAST.JackIfStatementNode);
+      case JackSpec.WHILE:
+        return this.visitWhileStatement(node as JackAST.JackWhileStatementNode);
+      case JackSpec.DO:
+        return this.visitDoStatement(node as JackAST.JackDoStatementNode);
+      case JackSpec.RETURN:
+        return this.visitReturnStatement(node as JackAST.JackReturnStatementNode);
       default:
         throw new Error(`Unknown statement type: ${(node as any).statementType}`);
     }
@@ -87,4 +92,3 @@ export abstract class JackVisitorAll<T> extends JackVisitorTopLevel<T> {
   protected abstract visitParenthesizedExpression(node: JackAST.JackParenthesizedExpressionNode): T;
   protected abstract visitSubroutineCall(node: JackAST.JackSubroutineCallNode): T;
 }
-
