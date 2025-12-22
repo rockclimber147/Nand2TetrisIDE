@@ -15,12 +15,8 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload }: File
   const handleFolderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFiles = event.target.files;
     if (!uploadedFiles) return;
-
     const newFiles: Record<string, string> = {};
-    
-    // Process all files in the folder
     const promises = Array.from(uploadedFiles).map(async (file) => {
-      // Basic filter: only read files relevant to your 4 editors
       const extension = file.name.split('.').pop()?.toLowerCase();
       const validExtensions = ['jack', 'hdl', 'vm', 'asm'];
       
@@ -32,14 +28,11 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload }: File
 
     await Promise.all(promises);
     onUpload(newFiles);
-    
-    // Reset input so the same folder can be uploaded again if needed
     event.target.value = '';
   };
 
   return (
     <div className="flex flex-col h-full select-none border-r border-black/20">
-      {/* Header with Upload Action */}
       <div className="flex items-center justify-between p-3 shrink-0">
         <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
           Explorer
@@ -51,20 +44,18 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload }: File
           <UploadCloud size={16} className="text-slate-400" />
         </button>
         
-        {/* Hidden Input for Folder Upload */}
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFolderUpload}
           className="hidden"
-          // @ts-ignore - webkitdirectory is non-standard but works in most browsers
+          // @ts-ignore
           webkitdirectory=""
           directory=""
           multiple
         />
       </div>
 
-      {/* File List */}
       <div className="flex-1 overflow-y-auto py-1">
         {files.length === 0 ? (
           <div className="px-4 py-8 text-center">
