@@ -26,7 +26,7 @@ export class JackDriver extends LanguageDriver {
         
         asts.push(parser.parse());
       } catch (e) {
-        asts.push(null); // Mark as failed
+        asts.push(null);
         if (e instanceof CompilerError) {
           projectErrors[name].push(e);
         } else {
