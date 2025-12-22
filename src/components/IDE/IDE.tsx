@@ -1,18 +1,22 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import JSZip from "jszip";
 import { FileExplorer } from "./FileExplorer";
 import { GenericEditor } from "./GenericEditor";
 import { type MonacoLanguageSpec } from "../../core/Editor/types";
+import { LanguageDriver } from "../../core/Parser/LanguageDriver";
+import { CompilerError } from "../../core/Errors";
 
 interface IDEProps {
   languageSpec: MonacoLanguageSpec;
+  driver: LanguageDriver<any>;
   title: string;
 }
 
-export const IDE = ({ languageSpec, title }: IDEProps) => {
+export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   const [files, setFiles] = useState<Record<string, string>>({});
   const [activeFileName, setActiveFileName] = useState<string | null>(null);
+  const [errors, setErrors] = useState<CompilerError[]>([]);
 
   const handleUpload = useCallback((newFiles: Record<string, string>) => {
     setFiles(newFiles);
@@ -26,6 +30,9 @@ export const IDE = ({ languageSpec, title }: IDEProps) => {
         ...prev,
         [activeFileName]: newCode,
       }));
+
+    const { errors: newErrors } = driver.compile(files[activeFileName]);
+    setErrors(newErrors);
     }
   }, [activeFileName]);
 
@@ -38,6 +45,14 @@ export const IDE = ({ languageSpec, title }: IDEProps) => {
     link.download = `${title.toLowerCase()}_project.zip`;
     link.click();
   };
+
+  useEffect(() => {
+    if (!activeFileName || !files[activeFileName]) return;
+
+    const { errors: newErrors } = driver.compile(files[activeFileName]);
+    setErrors(newErrors);
+
+  }, [files, activeFileName, driver]);
 
   return (
     <div className="h-full w-full flex flex-col bg-[#1e1e1e] text-slate-300">
@@ -72,6 +87,7 @@ export const IDE = ({ languageSpec, title }: IDEProps) => {
                 path={activeFileName}
                 value={files[activeFileName]}
                 onChange={handleCodeChange}
+                errors={errors}
               />
             ) : (
               <div className="flex-1 flex items-center justify-center text-slate-500 italic text-sm">
