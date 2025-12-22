@@ -1,15 +1,16 @@
 // src/components/Sidebar/FileExplorer.tsx
 import { useRef } from 'react';
-import { FileCode, UploadCloud } from 'lucide-react'; // Optional: npm install lucide-react
+import { FileCode, UploadCloud, Download } from 'lucide-react'; // Optional: npm install lucide-react
 
 interface FileExplorerProps {
   files: string[];
   activeFile: string | null;
   onFileSelect: (name: string) => void;
   onUpload: (files: Record<string, string>) => void;
+  onSave: () => void;
 }
 
-export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload }: FileExplorerProps) => {
+export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload, onSave }: FileExplorerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFolderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,27 +33,40 @@ export const FileExplorer = ({ files, activeFile, onFileSelect, onUpload }: File
   };
 
   return (
-    <div className="flex flex-col h-full select-none border-r border-black/20">
+<div className="flex flex-col h-full select-none border-r border-black/20">
       <div className="flex items-center justify-between p-3 shrink-0">
         <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
           Explorer
         </span>
-        <button 
-          onClick={() => fileInputRef.current?.click()}
-          className="p-1 hover:bg-slate-700 rounded transition-colors" title="Upload Folder"
-        >
-          <UploadCloud size={16} className="text-slate-400" />
-        </button>
         
+        <div className="flex gap-1">
+          {/* SAVE BUTTON */}
+          <button 
+            onClick={onSave}
+            disabled={files.length === 0}
+            className="p-1 hover:bg-slate-700 rounded transition-colors disabled:opacity-30"
+            title="Download Project (ZIP)"
+          >
+            <Download size={16} className="text-slate-400" />
+          </button>
+
+          {/* UPLOAD BUTTON */}
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            className="p-1 hover:bg-slate-700 rounded transition-colors"
+            title="Upload Folder"
+          >
+            <UploadCloud size={16} className="text-slate-400" />
+          </button>
+        </div>
+
         <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFolderUpload}
-          className="hidden"
-          // @ts-ignore
-          webkitdirectory=""
-          directory=""
-          multiple
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFolderUpload}
+        className="hidden"
+        multiple
+        {...{ webkitdirectory: "", directory: "" } as any}
         />
       </div>
 

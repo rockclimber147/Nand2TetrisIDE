@@ -4,6 +4,7 @@ import {
   Panel, 
   Separator 
 } from "react-resizable-panels";
+import JSZip from "jszip";
 import { GenericEditor } from "./components/Editor/GenericEditor";
 import { FileExplorer } from "./components/Editor/FileExplorer";
 import { JackMonacoSpec } from "./core/Languages/Jack/JackMonacoSpec";
@@ -26,6 +27,21 @@ export default function App() {
     }
   };
 
+  const handleDownload = async () => {
+  const zip = new JSZip();
+
+  Object.entries(files).forEach(([fileName, content]) => {
+    zip.file(fileName, content);
+  });
+
+  const content = await zip.generateAsync({ type: "blob" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(content);
+  link.download = "jack_project.zip";
+  link.click();
+};
+
   return (
     <div className="h-screen w-screen flex flex-col bg-[#1e1e1e] text-slate-300">
       
@@ -36,12 +52,13 @@ export default function App() {
       <main className="flex-1 h-full">
         <Group className="h-full">
           
-          <Panel defaultSize={20} collapsible minSize={15} className="bg-[#252526] flex flex-col">
+          <Panel defaultSize={200} collapsible minSize={150} className="bg-[#252526] flex flex-col">
             <FileExplorer 
               files={Object.keys(files)} 
               activeFile={activeFileName}
               onFileSelect={(name) => setActiveFileName(name)}
               onUpload={handleUpload}
+              onSave={handleDownload}
             />
           </Panel>
 
