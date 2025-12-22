@@ -4,6 +4,7 @@ import { JackTokenMatcher } from '../../../../src/core/Languages/Jack/JackSpec';
 import { JackParser } from '../../../../src/core/Languages/Jack/Parser';
 import { SymbolTableVisitor } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTableVisitor';
 import { SymbolKind } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/types';
+import { GlobalSymbolTable } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTable';
 
 describe('SymbolTableVisitor', () => {
   const getTableFromSource = (source: string) => {
@@ -11,8 +12,8 @@ describe('SymbolTableVisitor', () => {
     const tokens = tokenizer.tokenize();
     const parser = new JackParser(tokens);
     const ast = parser.parse();
-
-    const visitor = new SymbolTableVisitor();
+    const table = new GlobalSymbolTable();
+    const visitor = new SymbolTableVisitor(table);
     return visitor.visit(ast);
   };
 
@@ -145,8 +146,8 @@ describe('SymbolTableVisitor', () => {
       }
     `;
     const ast2 = getAstFromSource(source2);
-
-    const visitor = new SymbolTableVisitor();
+    const table = new GlobalSymbolTable();
+    const visitor = new SymbolTableVisitor(table);
 
     // Visit first AST
     visitor.visit(ast1);

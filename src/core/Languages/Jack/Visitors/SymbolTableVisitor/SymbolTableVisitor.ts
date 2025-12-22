@@ -13,9 +13,9 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
   private table: GlobalSymbolTable;
   private currentClass: ClassLevelTable | undefined = undefined;
 
-  constructor() {
+  constructor(table: GlobalSymbolTable) {
     super();
-    this.table = new GlobalSymbolTable();
+    this.table = table;
   }
 
   protected visitClass(node: JackClassNode): GlobalSymbolTable {

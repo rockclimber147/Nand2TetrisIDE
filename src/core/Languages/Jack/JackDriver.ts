@@ -6,6 +6,7 @@ import { CompilerError } from '../../Errors';
 import { GlobalSymbolTable } from './Visitors/SymbolTableVisitor/SymbolTable';
 import { SymbolTableVisitor } from './Visitors/SymbolTableVisitor/SymbolTableVisitor';
 import { JackSemanticVisitor } from './Visitors/SemanticVisitor/SemanticVisitor';
+import { SymbolTableBuiltinBuilder } from './Visitors/SymbolTableVisitor/SymbolTableBuiltInBuilder';
 
 export class JackDriver extends LanguageDriver {
   compileProject(files: Record<string, string>): Record<string, CompilerError[]> {
@@ -13,7 +14,6 @@ export class JackDriver extends LanguageDriver {
     const sources = Object.values(files);
     const projectErrors: Record<string, CompilerError[]> = {};
 
-    // Initialize error arrays for every file
     fileNames.forEach((name) => (projectErrors[name] = []));
 
     try {
@@ -24,10 +24,11 @@ export class JackDriver extends LanguageDriver {
         return parser.parse();
       });
 
-      const stVisitor = new SymbolTableVisitor();
       let globalTable = new GlobalSymbolTable();
+      SymbolTableBuiltinBuilder.populate(globalTable);
+      const stVisitor = new SymbolTableVisitor(globalTable);
       asts.forEach((ast) => {
-        globalTable = stVisitor.visit(ast);
+        stVisitor.visit(ast);
       });
 
       const semanticVisitor = new JackSemanticVisitor(globalTable);
@@ -37,8 +38,6 @@ export class JackDriver extends LanguageDriver {
         projectErrors[fileName] = semanticVisitor.getErrorsForCurrentPass();
       });
     } catch (e) {
-      // Handle catastrophic Parse/Lex errors (which usually happen in the active file)
-      // You might need to check which file index failed here
     }
 
     return projectErrors;

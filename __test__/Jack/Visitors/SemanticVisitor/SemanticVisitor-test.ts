@@ -17,8 +17,8 @@ describe('SemanticVisitor', () => {
       const parser = new JackParser(tokens);
       asts.push(parser.parse());
     });
-
-    const stVisitor = new SymbolTableVisitor();
+    const table = new GlobalSymbolTable();
+    const stVisitor = new SymbolTableVisitor(table);
     let globalTable = new GlobalSymbolTable();
     asts.forEach((ast) => (globalTable = stVisitor.visit(ast)));
 
