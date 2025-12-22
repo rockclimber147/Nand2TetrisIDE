@@ -114,8 +114,12 @@ export class ClassLevelTable {
     private isBuiltIn: boolean = false,
   ) {}
 
-  public setBuiltIn() {this.isBuiltIn = true}
-  public getBuiltin() {return this.isBuiltIn}
+  public setBuiltIn() {
+    this.isBuiltIn = true;
+  }
+  public getBuiltin() {
+    return this.isBuiltIn;
+  }
 
   public defineVar(name: string, type: string, kind: ClassVarKind): void {
     if (this.vars.has(name)) {

@@ -20,6 +20,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   const [activeFileName, setActiveFileName] = useState<string | null>(null);
   const [allErrors, setAllErrors] = useState<Record<string, CompilerError[]>>({});
   const [activeTree, setActiveTree] = useState<UINode | null>(null);
+  const [activeTab, setActiveTab] = useState<'editor' | 'tree'>('editor');
   const handleUpload = useCallback((newFiles: Record<string, string>) => {
     setFiles(newFiles);
     const firstFile = Object.keys(newFiles)[0];
@@ -52,30 +53,30 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   };
 
   const handleFileCreate = (name: string) => {
-  if (files[name] !== undefined) return;
+    if (files[name] !== undefined) return;
 
-  setFiles(prev => ({
-    ...prev,
-    [name]: "" 
-  }));
+    setFiles((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
 
-  // 3. Focus the new file immediately
-  setActiveFileName(name);
-};
+    // 3. Focus the new file immediately
+    setActiveFileName(name);
+  };
 
   useEffect(() => {
     if (!activeFileName || !files[activeFileName]) return;
 
     const result = driver.compileProject(files);
-  
-  setAllErrors(result.errors);
-  
-  // Set the tree for the currently open file
-  if (result.trees && result.trees[activeFileName]) {
-    setActiveTree(result.trees[activeFileName]);
-  } else {
-    setActiveTree(null);
-  }
+
+    setAllErrors(result.errors);
+
+    // Set the tree for the currently open file
+    if (result.trees && result.trees[activeFileName]) {
+      setActiveTree(result.trees[activeFileName]);
+    } else {
+      setActiveTree(null);
+    }
   }, [files, activeFileName, driver]);
 
   return (

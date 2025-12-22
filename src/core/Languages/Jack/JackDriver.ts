@@ -11,7 +11,6 @@ import { type JackClassNode } from './AST';
 import type { UINode } from './Visitors/UITreeVisitor/types';
 import { UITreeVisitor } from './Visitors/UITreeVisitor/UITreeVisitor';
 
-
 export class JackDriver extends LanguageDriver {
   compileProject(files: Record<string, string>): CompilationResponse {
     const fileNames = Object.keys(files);
@@ -26,7 +25,7 @@ export class JackDriver extends LanguageDriver {
         const tokenizer = new GenericTokenizer(source, JackTokenMatcher);
         const tokens = tokenizer.tokenize();
         const parser = new JackParser(tokens);
-        
+
         asts.push(parser.parse());
       } catch (e) {
         asts.push(null);
@@ -41,7 +40,7 @@ export class JackDriver extends LanguageDriver {
     let globalTable = new GlobalSymbolTable();
     SymbolTableBuiltinBuilder.populate(globalTable);
     const stVisitor = new SymbolTableVisitor(globalTable);
-    
+
     asts.forEach((ast) => {
       if (ast) stVisitor.visit(ast);
     });
@@ -59,10 +58,10 @@ export class JackDriver extends LanguageDriver {
     const uiVisitor = new UITreeVisitor();
 
     asts.forEach((ast, index) => {
-        if (ast) {
+      if (ast) {
         const fileName = fileNames[index];
         trees[fileName] = uiVisitor.visit(ast);
-        }
+      }
     });
 
     return { errors: projectErrors, trees: trees };

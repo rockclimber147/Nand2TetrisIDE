@@ -17,7 +17,7 @@ export const FileExplorer = ({
   onFileSelect,
   onUpload,
   onSave,
-  onFileCreate
+  onFileCreate,
 }: FileExplorerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -71,12 +71,16 @@ export const FileExplorer = ({
           >
             <FilePlus size={16} className="text-slate-400" />
           </button>
-          
+
           <button onClick={onSave} className="..." title="Download Project (ZIP)">
             <Download size={16} className="text-slate-400" />
           </button>
 
-          <button onClick={() => fileInputRef.current?.click()} className="..." title="Upload Folder">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="..."
+            title="Upload Folder"
+          >
             <UploadCloud size={16} className="text-slate-400" />
           </button>
         </div>

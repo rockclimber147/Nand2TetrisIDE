@@ -16,21 +16,19 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, isLast, isRoot = false }) => 
     <div className="relative ml-4">
       {/* Vertical connector line for parent to children */}
       {!isRoot && (
-        <div 
-          className="absolute left-[-13px] top-[-8px] bottom-0 w-[1px] bg-slate-700" 
+        <div
+          className="absolute left-[-13px] top-[-8px] bottom-0 w-[1px] bg-slate-700"
           style={{ height: isLast ? '22px' : '100%' }}
         />
       )}
-      
+
       {/* Horizontal connector line to the node itself */}
-      {!isRoot && (
-        <div className="absolute left-[-13px] top-[14px] w-3 h-[1px] bg-slate-700" />
-      )}
+      {!isRoot && <div className="absolute left-[-13px] top-[14px] w-3 h-[1px] bg-slate-700" />}
 
       <div className="flex items-center group py-1 select-none cursor-pointer">
         {hasChildren ? (
-          <button 
-            onClick={() => setIsOpen(!isOpen)} 
+          <button
+            onClick={() => setIsOpen(!isOpen)}
             className="p-0.5 hover:bg-slate-700 rounded mr-1 z-10 bg-[#1e1e1e]"
           >
             {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -52,11 +50,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, isLast, isRoot = false }) => 
       {isOpen && hasChildren && (
         <div className="ml-1">
           {node.children.map((child: UINode, index: number) => (
-            <TreeNode 
-              key={index} 
-              node={child} 
-              isLast={index === node.children.length - 1} 
-            />
+            <TreeNode key={index} node={child} isLast={index === node.children.length - 1} />
           ))}
         </div>
       )}
