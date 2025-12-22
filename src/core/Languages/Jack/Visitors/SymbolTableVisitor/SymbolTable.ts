@@ -1,17 +1,4 @@
-import { JackSpec } from '../../JackSpec';
-
-export class SymbolKinds {
-  static readonly STATIC = 'STATIC';
-  static readonly FIELD = 'FIELD';
-  static readonly ARG = 'ARG';
-  static readonly VAR = 'VAR';
-}
-export type ClassVarKind = typeof SymbolKinds.STATIC | typeof SymbolKinds.FIELD;
-export type SubroutineKind =
-  | typeof JackSpec.CONSTRUCTOR
-  | typeof JackSpec.METHOD
-  | typeof JackSpec.FUNCTION;
-export type SubroutineVarKind = typeof SymbolKinds.ARG | typeof SymbolKinds.VAR;
+import type { ClassVarKind, SubroutineVarKind, SymbolEntry } from './types';
 
 export class GlobalSymbolTable {
   private classes = new Map<string, ClassLevelTable>();
@@ -33,17 +20,11 @@ export class GlobalSymbolTable {
 
   }
 
-}
-
-export interface ClassVarEntry {
-  name: string;
-  type: string;
-  kind: ClassVarKind;
-  index: number;
+  
 }
 
 export class ClassLevelTable {
-  private vars = new Map<string, ClassVarEntry>();
+  private vars = new Map<string, SymbolEntry>();
   private subroutines = new Map<string, SubroutineLevelTable>();
   private counts: Record<ClassVarKind, number> = { STATIC: 0, FIELD: 0 };
 
@@ -65,7 +46,7 @@ export class ClassLevelTable {
     });
   }
 
-  public lookupVar(name: string): ClassVarEntry {
+  public lookupVar(name: string): SymbolEntry {
     if (!this.vars.has(name)) {
       throw new Error(`Var ${name} does not exist in class ${this.className}`);
     }
@@ -90,15 +71,8 @@ export class ClassLevelTable {
   }
 }
 
-export interface SubroutineVarEntry {
-  name: string;
-  type: string;
-  kind: SubroutineVarKind;
-  index: number;
-}
-
 export class SubroutineLevelTable {
-  private vars: Map<string, SubroutineVarEntry> = new Map();
+  private vars: Map<string, SymbolEntry> = new Map();
   private counts: Record<SubroutineVarKind, number> = { VAR: 0, ARG: 0 };
 
   constructor(
@@ -121,7 +95,7 @@ export class SubroutineLevelTable {
     });
   }
 
-  public lookupVar(name: string): SubroutineVarEntry {
+  public lookupVar(name: string): SymbolEntry {
     if (!this.vars.has(name)) {
       throw new Error(
         `Var ${name} does not exist in class ${this.className}.${this.subroutineName}`,

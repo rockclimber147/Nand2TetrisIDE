@@ -1,7 +1,8 @@
 import type { JackClassNode, JackSubroutineNode } from '../../AST';
 import { JackSpec } from '../../JackSpec';
 import { JackVisitorTopLevel } from '../JackVisitorBase';
-import { ClassLevelTable, GlobalSymbolTable, SymbolKinds } from './SymbolTable';
+import { ClassLevelTable, GlobalSymbolTable} from './SymbolTable';
+import { SymbolKind } from './types';
 
 export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
   private table: GlobalSymbolTable;
@@ -19,7 +20,7 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
     node.classVarDecs.forEach((varDecNode) => {
       varDecNode.names.forEach((name) => {
         const kind =
-          varDecNode.varKind === JackSpec.STATIC ? SymbolKinds.STATIC : SymbolKinds.FIELD;
+          varDecNode.varKind === JackSpec.STATIC ? SymbolKind.STATIC : SymbolKind.FIELD;
         classTable.defineVar(name, varDecNode.type, kind);
       });
     });
@@ -37,16 +38,16 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
     const subroutineTable = classTable.defineSubroutine(node.name);
 
     if (node.subroutineKind === JackSpec.METHOD) {
-      subroutineTable.defineVar(JackSpec.THIS, classTable.className, SymbolKinds.ARG);
+      subroutineTable.defineVar(JackSpec.THIS, classTable.className, SymbolKind.ARG);
     }
 
     node.parameters.forEach((param) => {
-      subroutineTable.defineVar(param.name, param.type, SymbolKinds.ARG);
+      subroutineTable.defineVar(param.name, param.type, SymbolKind.ARG);
     });
 
     node.body?.varDecs.forEach((varDecNode) => {
       varDecNode.names.forEach((name) => {
-        subroutineTable.defineVar(name, varDecNode.type, SymbolKinds.VAR);
+        subroutineTable.defineVar(name, varDecNode.type, SymbolKind.VAR);
       });
     });
 
