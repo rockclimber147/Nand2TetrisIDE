@@ -10,7 +10,6 @@ interface GenericEditorProps {
 
 export const GenericEditor = ({ spec, value, onChange, path }: GenericEditorProps) => {
   const handleBeforeMount = (monaco: Monaco) => {
-    // Only register if it hasn't been registered yet
     if (!monaco.languages.getLanguages().some((lang: { id: string; }) => lang.id === spec.id)) {
       monaco.languages.register({ id: spec.id, extensions: spec.extensions });
       
@@ -23,7 +22,7 @@ export const GenericEditor = ({ spec, value, onChange, path }: GenericEditorProp
     <div className="w-full h-full">
       <Editor
         height="100%"
-        path={path} // Useful for keeping undo/redo history per file
+        path={path}
         language={spec.id}
         theme="vs-dark"
         value={value}
@@ -34,7 +33,7 @@ export const GenericEditor = ({ spec, value, onChange, path }: GenericEditorProp
           minimap: { enabled: false },
           fontSize: 14,
           scrollBeyondLastLine: false,
-          fixedOverflowWidgets: true, // Prevents tooltips from being cut off by panels
+          fixedOverflowWidgets: true,
         }}
       />
     </div>
