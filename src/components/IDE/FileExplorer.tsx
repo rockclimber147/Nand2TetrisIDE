@@ -1,6 +1,6 @@
 // src/components/Sidebar/FileExplorer.tsx
-import { useRef } from 'react';
-import { FileCode, UploadCloud, Download } from 'lucide-react'; // Optional: npm install lucide-react
+import { useRef, useState } from 'react';
+import { FileCode, FilePlus, UploadCloud, Download } from 'lucide-react'; // Optional: npm install lucide-react
 
 interface FileExplorerProps {
   files: string[];
@@ -8,6 +8,7 @@ interface FileExplorerProps {
   onFileSelect: (name: string) => void;
   onUpload: (files: Record<string, string>) => void;
   onSave: () => void;
+  onFileCreate: (name: string) => void;
 }
 
 export const FileExplorer = ({
@@ -16,8 +17,11 @@ export const FileExplorer = ({
   onFileSelect,
   onUpload,
   onSave,
+  onFileCreate
 }: FileExplorerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [newFileName, setNewFileName] = useState('');
 
   const handleFolderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFiles = event.target.files;
@@ -38,6 +42,19 @@ export const FileExplorer = ({
     event.target.value = '';
   };
 
+  const handleCreateSubmit = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && newFileName.trim()) {
+      // Basic check: Ensure extension is valid for your compiler
+      const name = newFileName.trim();
+      onFileCreate(name);
+      setNewFileName('');
+      setIsCreating(false);
+    } else if (e.key === 'Escape') {
+      setIsCreating(false);
+      setNewFileName('');
+    }
+  };
+
   return (
     <div className="flex flex-col h-full select-none border-r border-black/20">
       <div className="flex items-center justify-between p-3 shrink-0">
@@ -46,25 +63,41 @@ export const FileExplorer = ({
         </span>
 
         <div className="flex gap-1">
-          {/* SAVE BUTTON */}
+          {/* NEW FILE BUTTON */}
           <button
-            onClick={onSave}
-            disabled={files.length === 0}
-            className="p-1 hover:bg-slate-700 rounded transition-colors disabled:opacity-30"
-            title="Download Project (ZIP)"
+            onClick={() => setIsCreating(true)}
+            className="p-1 hover:bg-slate-700 rounded transition-colors"
+            title="New File"
           >
+            <FilePlus size={16} className="text-slate-400" />
+          </button>
+          
+          <button onClick={onSave} className="..." title="Download Project (ZIP)">
             <Download size={16} className="text-slate-400" />
           </button>
 
-          {/* UPLOAD BUTTON */}
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-1 hover:bg-slate-700 rounded transition-colors"
-            title="Upload Folder"
-          >
+          <button onClick={() => fileInputRef.current?.click()} className="..." title="Upload Folder">
             <UploadCloud size={16} className="text-slate-400" />
           </button>
         </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto py-1">
+        {/* INLINE NEW FILE INPUT */}
+        {isCreating && (
+          <div className="px-4 py-1.5 flex items-center gap-2 bg-[#37373d]">
+            <FileCode size={14} className="text-blue-400" />
+            <input
+              autoFocus
+              className="bg-transparent outline-none text-sm text-white w-full border border-blue-500 px-1"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+              onKeyDown={handleCreateSubmit}
+              onBlur={() => setIsCreating(false)}
+              placeholder="filename.jack"
+            />
+          </div>
+        )}
 
         <input
           type="file"

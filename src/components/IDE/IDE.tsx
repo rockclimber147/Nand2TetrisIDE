@@ -49,6 +49,18 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
     link.click();
   };
 
+  const handleFileCreate = (name: string) => {
+  if (files[name] !== undefined) return;
+
+  setFiles(prev => ({
+    ...prev,
+    [name]: "" 
+  }));
+
+  // 3. Focus the new file immediately
+  setActiveFileName(name);
+};
+
   useEffect(() => {
     if (!activeFileName || !files[activeFileName]) return;
 
@@ -75,6 +87,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
               onFileSelect={setActiveFileName}
               onUpload={handleUpload}
               onSave={handleSave}
+              onFileCreate={handleFileCreate}
             />
           </Panel>
 
