@@ -35,7 +35,7 @@ export class SymbolTableVisitor extends JackVisitorTopLevel<GlobalSymbolTable> {
 
   protected visitSubroutine(node: JackSubroutineNode): GlobalSymbolTable {
     const classTable = this.currentClass!;
-    const subroutineTable = classTable.defineSubroutine(node.name);
+    const subroutineTable = classTable.defineSubroutine(node.name, node.subroutineKind);
 
     if (node.subroutineKind === JackSpec.METHOD) {
       subroutineTable.defineVar(JackSpec.THIS, classTable.className, SymbolKind.ARG);

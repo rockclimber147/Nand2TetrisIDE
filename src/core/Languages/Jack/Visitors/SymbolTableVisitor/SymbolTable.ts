@@ -1,4 +1,5 @@
-import type { ClassVarKind, SubroutineVarKind, SymbolEntry } from './types';
+import { SymbolKind, type ClassVarKind, type SubroutineVarKind, type SymbolEntry } from './types';
+import { JackSpec } from '../../JackSpec';
 
 export class GlobalSymbolTable {
   private classes = new Map<string, ClassLevelTable>();
@@ -12,15 +13,44 @@ export class GlobalSymbolTable {
     return table;
   }
 
-  public validateVar(name: string, fromClass: string, fromSubroutine: string) {
+public validateVar(name: string, fromClass: string, fromSubroutine: string): string | null {
+    const symbol = this.findVar(name, fromClass, fromSubroutine);
+    
+    if (!symbol) {
+      return `Variable '${name}' is not defined.`;
+    }
 
+    // Access Rule: field variables cannot be accessed in static functions
+    if (symbol.kind === SymbolKind.FIELD) {
+      const sub = this.classes.get(fromClass)?.lookupSubroutine(fromSubroutine);
+      // You'll need to store the subroutine type (function/method) in the table
+      if (sub?.category === JackSpec.FUNCTION) {
+        return `Field variable '${name}' cannot be accessed from a static function.`;
+      }
+    }
+
+    return null; // Valid
   }
 
   public validateSubroutineCall(name: string, fromClass: string, fromSubroutine: string) {
 
   }
 
-  
+  private findVar(name: string, fromClass: string, fromSubroutine: string): SymbolEntry | undefined {
+    const classTable = this.classes.get(fromClass);
+    if (!classTable) return undefined;
+
+    try {
+      const subTable = classTable.lookupSubroutine(fromSubroutine);
+      return subTable.lookupVar(name);
+    } catch {
+      try {
+        return classTable.lookupVar(name);
+      } catch {
+        return undefined;
+      }
+    }
+  }
 }
 
 export class ClassLevelTable {
@@ -53,11 +83,11 @@ export class ClassLevelTable {
     return this.vars.get(name)!;
   }
 
-  public defineSubroutine(name: string): SubroutineLevelTable {
+  public defineSubroutine(name: string, category: string): SubroutineLevelTable {
     if (this.subroutines.has(name)) {
       throw new Error(`Subroutine '${name}' is already defined in class ${this.className}.`);
     }
-    const table = new SubroutineLevelTable(name, this.className);
+    const table = new SubroutineLevelTable(name, this.className, category);
     this.subroutines.set(name, table);
     return table;
   }
@@ -78,6 +108,7 @@ export class SubroutineLevelTable {
   constructor(
     public readonly subroutineName: string,
     public readonly className: string,
+    public readonly category: string
   ) {}
 
   public defineVar(name: string, type: string, kind: SubroutineVarKind): void {
