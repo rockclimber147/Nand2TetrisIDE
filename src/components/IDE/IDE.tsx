@@ -8,6 +8,8 @@ import { LanguageDriver } from '../../core/LanguageDriver';
 import { CompilerError } from '../../core/Errors';
 import { ASTVisualizer } from './TreeVisualizer';
 import type { UINode } from '../../core/Languages/Jack/Visitors/UITreeVisitor/types';
+import { SymbolTableVisualizer } from './SymbolTableVisualizer';
+import type { SymbolScope } from '../../core/SymbolTable/types';
 
 interface IDEProps {
   languageSpec: MonacoLanguageSpec;
@@ -20,7 +22,8 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   const [activeFileName, setActiveFileName] = useState<string | null>(null);
   const [allErrors, setAllErrors] = useState<Record<string, CompilerError[]>>({});
   const [activeTree, setActiveTree] = useState<UINode | null>(null);
-  const [activeTab, setActiveTab] = useState<'editor' | 'tree'>('editor');
+  const [symbolTableData, setSymbolTableData] = useState<SymbolScope | null>(null)
+  const [activeTab, setActiveTab] = useState<'editor' | 'tree' | "symbols">('editor');
   const handleUpload = useCallback((newFiles: Record<string, string>) => {
     setFiles(newFiles);
     const firstFile = Object.keys(newFiles)[0];
@@ -60,7 +63,6 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
       [name]: '',
     }));
 
-    // 3. Focus the new file immediately
     setActiveFileName(name);
   };
 
@@ -74,6 +76,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
         } else {
         setActiveTree(null);
         }
+        if (result.symbolTable) setSymbolTableData(result.symbolTable)
     }, [files, activeFileName, driver]);
 
     // Derived error set for Sidebar
@@ -106,37 +109,54 @@ return (
               <>
                 {/* TAB BAR */}
                 <div className="flex bg-[#252526] border-b border-black h-9">
-                  <button
+                <button
                     onClick={() => setActiveTab('editor')}
                     className={`px-4 text-xs flex items-center gap-2 border-r border-black transition-colors ${
-                      activeTab === 'editor' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
+                    activeTab === 'editor' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
                     }`}
-                  >
+                >
                     Code
-                  </button>
-                  <button
+                </button>
+                <button
                     onClick={() => setActiveTab('tree')}
                     className={`px-4 text-xs flex items-center gap-2 border-r border-black transition-colors ${
-                      activeTab === 'tree' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
+                    activeTab === 'tree' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
                     }`}
-                  >
+                >
                     Tree Visualizer
-                  </button>
+                </button>
+                
+                {/* ADD THIS BUTTON */}
+                <button
+                    onClick={() => setActiveTab('symbols')}
+                    className={`px-4 text-xs flex items-center gap-2 border-r border-black transition-colors ${
+                    activeTab === 'symbols' ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
+                    }`}
+                >
+                    Symbols
+                </button>
                 </div>
 
                 {/* TAB CONTENT */}
                 <div className="flex-1 min-h-0">
-                  {activeTab === 'editor' ? (
+                {activeTab === 'editor' && (
                     <GenericEditor
-                      spec={languageSpec}
-                      path={activeFileName}
-                      value={files[activeFileName]}
-                      onChange={handleCodeChange}
-                      errors={allErrors}
+                    spec={languageSpec}
+                    path={activeFileName}
+                    value={files[activeFileName]}
+                    onChange={handleCodeChange}
+                    errors={allErrors}
                     />
-                  ) : (
+                )}
+
+                {activeTab === 'tree' && (
                     <ASTVisualizer root={activeTree} />
-                  )}
+                )}
+
+                {/* ADD THIS SECTION */}
+                {activeTab === 'symbols' && (
+                    <SymbolTableVisualizer scope={symbolTableData} />
+                )}
                 </div>
               </>
             ) : (
