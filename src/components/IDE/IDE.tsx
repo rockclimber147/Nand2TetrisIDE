@@ -87,7 +87,7 @@ return (
 
       <main className="flex-1 min-h-0">
         <Group className="h-full">
-          <Panel defaultSize={20} minSize={15} className="bg-[#252526]">
+          <Panel defaultSize={200} minSize={150} className="bg-[#252526]">
             <FileExplorer
               files={Object.keys(files)}
               activeFile={activeFileName}
@@ -95,6 +95,7 @@ return (
               onUpload={handleUpload}
               onSave={handleSave}
               onFileCreate={handleFileCreate}
+              errorFiles = {errorFiles}
             />
           </Panel>
 
