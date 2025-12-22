@@ -1,4 +1,4 @@
-import { LanguageDriver } from '../../Parser/LanguageDriver';
+import { LanguageDriver, type CompilationResponse } from '../../Parser/LanguageDriver';
 import { GenericTokenizer } from '../../Tokenizer';
 import { JackTokenMatcher } from './JackSpec';
 import { JackParser } from './Parser';
@@ -8,9 +8,12 @@ import { SymbolTableVisitor } from './Visitors/SymbolTableVisitor/SymbolTableVis
 import { JackSemanticVisitor } from './Visitors/SemanticVisitor/SemanticVisitor';
 import { SymbolTableBuiltinBuilder } from './Visitors/SymbolTableVisitor/SymbolTableBuiltInBuilder';
 import { type JackClassNode } from './AST';
+import type { UINode } from './Visitors/UITreeVisitor/types';
+import { UITreeVisitor } from './Visitors/UITreeVisitor/UITreeVisitor';
+
 
 export class JackDriver extends LanguageDriver {
-  compileProject(files: Record<string, string>): Record<string, CompilerError[]> {
+  compileProject(files: Record<string, string>): CompilationResponse {
     const fileNames = Object.keys(files);
     const projectErrors: Record<string, CompilerError[]> = {};
     const asts: (JackClassNode | null)[] = [];
@@ -52,6 +55,16 @@ export class JackDriver extends LanguageDriver {
       }
     });
 
-    return projectErrors;
+    const trees: Record<string, UINode> = {};
+    const uiVisitor = new UITreeVisitor();
+
+    asts.forEach((ast, index) => {
+        if (ast) {
+        const fileName = fileNames[index];
+        trees[fileName] = uiVisitor.visit(ast);
+        }
+    });
+
+    return { errors: projectErrors, trees: trees };
   }
 }

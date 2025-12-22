@@ -6,6 +6,8 @@ import { GenericEditor } from './GenericEditor';
 import { type MonacoLanguageSpec } from '../../core/Editor/types';
 import { LanguageDriver } from '../../core/Parser/LanguageDriver';
 import { CompilerError } from '../../core/Errors';
+import { ASTVisualizer } from './UINode';
+import type { UINode } from '../../core/Languages/Jack/Visitors/UITreeVisitor/types';
 
 interface IDEProps {
   languageSpec: MonacoLanguageSpec;
@@ -17,7 +19,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   const [files, setFiles] = useState<Record<string, string>>({});
   const [activeFileName, setActiveFileName] = useState<string | null>(null);
   const [allErrors, setAllErrors] = useState<Record<string, CompilerError[]>>({});
-
+  const [activeTree, setActiveTree] = useState<UINode | null>(null);
   const handleUpload = useCallback((newFiles: Record<string, string>) => {
     setFiles(newFiles);
     const firstFile = Object.keys(newFiles)[0];
@@ -32,7 +34,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
           [activeFileName]: newCode,
         }));
 
-        const newErrors = driver.compileProject(files);
+        const newErrors = driver.compileProject(files).errors;
         setAllErrors(newErrors);
       }
     },
@@ -64,8 +66,16 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   useEffect(() => {
     if (!activeFileName || !files[activeFileName]) return;
 
-    const newErrors = driver.compileProject(files);
-    setAllErrors(newErrors);
+    const result = driver.compileProject(files);
+  
+  setAllErrors(result.errors);
+  
+  // Set the tree for the currently open file
+  if (result.trees && result.trees[activeFileName]) {
+    setActiveTree(result.trees[activeFileName]);
+  } else {
+    setActiveTree(null);
+  }
   }, [files, activeFileName, driver]);
 
   return (
