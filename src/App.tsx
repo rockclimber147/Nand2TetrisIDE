@@ -3,7 +3,8 @@ import {
   Panel, 
   Separator 
 } from "react-resizable-panels";
-import { JackEditor } from "./components/Editor/JackEditor";
+import { GenericEditor } from "./components/Editor/Editor";
+import { JackMonacoSpec } from "./core/Languages/Jack/JackMonacoSpec";
 
 export default function App() {
   return (
@@ -34,7 +35,7 @@ export default function App() {
                       outline-none focus:outline-none" 
           />
           <Panel className="flex flex-col min-w-0">
-              <JackEditor />
+              <GenericEditor spec={JackMonacoSpec}/>
           </Panel>
 
         </Group>
