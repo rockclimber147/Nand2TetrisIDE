@@ -1,4 +1,4 @@
-import { LanguageDriver, type CompilationResponse } from '../../Parser/LanguageDriver';
+import { LanguageDriver, type CompilationResponse } from '../../LanguageDriver';
 import { GenericTokenizer } from '../../Tokenizer';
 import { JackTokenMatcher } from './JackSpec';
 import { JackParser } from './Parser';
@@ -64,6 +64,6 @@ export class JackDriver extends LanguageDriver {
       }
     });
 
-    return { errors: projectErrors, trees: trees };
+    return { errors: projectErrors, trees: trees, symbolTable: globalTable.toVisual() };
   }
 }

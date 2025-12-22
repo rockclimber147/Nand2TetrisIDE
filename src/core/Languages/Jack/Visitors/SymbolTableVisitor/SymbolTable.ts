@@ -1,7 +1,9 @@
 import { SymbolKind, type ClassVarKind, type SubroutineVarKind, type SymbolEntry } from './types';
 import { JackSpec } from '../../JackSpec';
+import { BaseSymbolTable } from '../../../../SymbolTable/SymbolTableBase';
+import type { SymbolScope, SymbolMetadata } from '../../../../SymbolTable/types';
 
-export class GlobalSymbolTable {
+export class GlobalSymbolTable extends BaseSymbolTable{
   private classes = new Map<string, ClassLevelTable>();
 
   public addClass(className: string): ClassLevelTable {
@@ -102,6 +104,21 @@ export class GlobalSymbolTable {
       }
     }
   }
+
+public toVisual(): SymbolScope {
+    const children: Record<string, SymbolScope> = {};
+    this.classes.forEach((table, name) => {
+      if (!table.getBuiltin()) {
+        children[name] = table.toVisual();
+      }
+    });
+
+    return {
+      name: "Jack Project",
+      symbols: {},
+      children
+    };
+  }
 }
 
 export class ClassLevelTable {
@@ -156,6 +173,25 @@ export class ClassLevelTable {
     }
     return this.subroutines.get(name)!;
   }
+
+  public toVisual(): SymbolScope {
+    const symbols: Record<string, SymbolMetadata> = {};
+    this.vars.forEach((entry, name) => {
+      symbols[name] = { type: entry.type, kind: entry.kind, index: entry.index };
+    });
+
+    const children: Record<string, SymbolScope> = {};
+    this.subroutines.forEach((sub, name) => {
+      children[name] = sub.toVisual();
+    });
+
+    return {
+      name: this.className,
+      metadata: { scope: "class" },
+      symbols,
+      children
+    };
+  }
 }
 
 export class SubroutineLevelTable {
@@ -190,5 +226,19 @@ export class SubroutineLevelTable {
       );
     }
     return this.vars.get(name)!;
+  }
+
+  public toVisual(): SymbolScope {
+    const symbols: Record<string, SymbolMetadata> = {};
+    this.vars.forEach((entry, name) => {
+      symbols[name] = { type: entry.type, kind: entry.kind, index: entry.index };
+    });
+
+    return {
+      name: this.subroutineName,
+      metadata: { category: this.category },
+      symbols,
+      children: {} 
+    };
   }
 }

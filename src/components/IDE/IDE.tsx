@@ -4,9 +4,9 @@ import JSZip from 'jszip';
 import { FileExplorer } from './FileExplorer';
 import { GenericEditor } from './GenericEditor';
 import { type MonacoLanguageSpec } from '../../core/Editor/types';
-import { LanguageDriver } from '../../core/Parser/LanguageDriver';
+import { LanguageDriver } from '../../core/LanguageDriver';
 import { CompilerError } from '../../core/Errors';
-import { ASTVisualizer } from './UINode';
+import { ASTVisualizer } from './TreeVisualizer';
 import type { UINode } from '../../core/Languages/Jack/Visitors/UITreeVisitor/types';
 
 interface IDEProps {
