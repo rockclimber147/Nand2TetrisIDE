@@ -3,7 +3,7 @@ import { GenericTokenizer } from '../../../../src/core/Tokenizer';
 import { JackTokenMatcher } from '../../../../src/core/Languages/Jack/JackSpec';
 import { JackParser } from '../../../../src/core/Languages/Jack/Parser';
 import { SymbolTableVisitor } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTableVisitor';
-import { SymbolKinds } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/SymbolTable';
+import { SymbolKind } from '../../../../src/core/Languages/Jack/Visitors/SymbolTableVisitor/types';
 
 describe('SymbolTableVisitor', () => {
   const getTableFromSource = (source: string) => {
@@ -37,17 +37,17 @@ describe('SymbolTableVisitor', () => {
     const squareTable = (globalTable as any).classes.get('Square');
 
     expect(squareTable.lookupVar('x')).toMatchObject({
-      kind: SymbolKinds.FIELD,
+      kind: SymbolKind.FIELD,
       index: 0,
       type: 'int',
     });
     expect(squareTable.lookupVar('y')).toMatchObject({
-      kind: SymbolKinds.FIELD,
+      kind: SymbolKind.FIELD,
       index: 1,
       type: 'int',
     });
     expect(squareTable.lookupVar('count')).toMatchObject({
-      kind: SymbolKinds.STATIC,
+      kind: SymbolKind.STATIC,
       index: 0,
       type: 'int',
     });
@@ -68,7 +68,7 @@ describe('SymbolTableVisitor', () => {
 
     // draw is a method, should have 'this' at ARG 0
     expect(drawTable.lookupVar('this')).toMatchObject({
-      kind: SymbolKinds.ARG,
+      kind: SymbolKind.ARG,
       index: 0,
       type: 'Square',
     });
@@ -91,9 +91,9 @@ describe('SymbolTableVisitor', () => {
     const mathTable = (globalTable as any).classes.get('Math');
     const addTable = mathTable.lookupSubroutine('add');
 
-    expect(addTable.lookupVar('a')).toMatchObject({ kind: SymbolKinds.ARG, index: 0 });
-    expect(addTable.lookupVar('b')).toMatchObject({ kind: SymbolKinds.ARG, index: 1 });
-    expect(addTable.lookupVar('sum')).toMatchObject({ kind: SymbolKinds.VAR, index: 0 });
+    expect(addTable.lookupVar('a')).toMatchObject({ kind: SymbolKind.ARG, index: 0 });
+    expect(addTable.lookupVar('b')).toMatchObject({ kind: SymbolKind.ARG, index: 1 });
+    expect(addTable.lookupVar('sum')).toMatchObject({ kind: SymbolKind.VAR, index: 0 });
   });
 
   test('should maintain separate indices for different subroutines', () => {
@@ -156,14 +156,14 @@ describe('SymbolTableVisitor', () => {
     // 1. Verify Square still exists and is correct
     const squareTable = (globalTable as any).classes.get('Square');
     expect(squareTable).toBeDefined();
-    expect(squareTable.lookupVar('x').kind).toBe(SymbolKinds.FIELD);
+    expect(squareTable.lookupVar('x').kind).toBe(SymbolKind.FIELD);
     expect(squareTable.lookupSubroutine('main')).toBeDefined();
 
     // 2. Verify Rectangle was added correctly
     const rectTable = (globalTable as any).classes.get('Rectangle');
     expect(rectTable).toBeDefined();
     expect(rectTable.lookupVar('width')).toMatchObject({
-      kind: SymbolKinds.FIELD,
+      kind: SymbolKind.FIELD,
       index: 0,
     });
     expect(rectTable.lookupSubroutine('init')).toBeDefined();
