@@ -80,7 +80,7 @@ export class ChipLevelTable {
     this.symbols.forEach((entry, name) => {
       symbols[name] = { 
         kind: entry.kind, 
-        width: entry.width === 1 ? '1-bit' : `${entry.width}-bit` 
+        width: `${entry.width}-bit` 
       };
     });
 
