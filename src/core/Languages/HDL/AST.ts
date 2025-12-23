@@ -1,7 +1,7 @@
-import { type ASTNode, ASTNodeKind } from "../../AST/AST";
+import { type ASTNode, ASTNodeKind } from '../../AST/AST';
 
 export interface HDLChipNode extends ASTNode {
-    kind: ASTNodeKind.CHIP_DEFINITION
+  kind: ASTNodeKind.CHIP_DEFINITION;
 }
 
 export interface HDLChipNode extends ASTNode {

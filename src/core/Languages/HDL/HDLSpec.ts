@@ -46,7 +46,7 @@ export class HDLSpec {
   static readonly PARTS = 'PARTS';
   static readonly BUILTIN = 'BUILTIN';
   static readonly CLOCKED = 'CLOCKED';
-  
+
   // Constants
   static readonly TRUE = 'true';
   static readonly FALSE = 'false';
@@ -63,8 +63,5 @@ export class HDLSpec {
   ]);
 
   // --- Useful Helpers for the HDL Parser ---
-  static readonly IO_KEYWORDS = new Set([
-    HDLSpec.IN,
-    HDLSpec.OUT
-  ]);
+  static readonly IO_KEYWORDS = new Set([HDLSpec.IN, HDLSpec.OUT]);
 }
