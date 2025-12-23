@@ -2,6 +2,8 @@ import { LanguageDriver, type CompilationResponse } from '../../LanguageDriver';
 import { GenericTokenizer } from '../../Tokenizer';
 import { HDLTokenMatcher } from './HDLSpec';
 import { HDLParser } from './Parser';
+import { HDLGlobalSymbolTable } from './Visitors/SymboltableVisitor/SymbolTable';
+import { HDLSymbolTableVisitor } from './Visitors/SymboltableVisitor/SymbolTableVisitor';
 import { CompilerError } from '../../Errors';
 import type { HDLChipNode } from './AST';
 import { type UINode } from '../Jack/Visitors/UITreeVisitor/types';
@@ -32,14 +34,21 @@ export class HDLDriver extends LanguageDriver {
       }
     });
 
+    const globalTable = new HDLGlobalSymbolTable();
+    const stVisitor = new HDLSymbolTableVisitor(globalTable);
+
+    successfulASTs.forEach((ast) => {
+      try {
+        stVisitor.visit(ast);
+      } catch (e) {
+        console.error("Symbol Table Error:", e);
+      }
+    });
+
     return {
       errors: projectErrors,
       trees: trees,
-      symbolTable: {
-        name: 'HDL Project (Parsing Phase)',
-        symbols: {},
-        children: {},
-      },
+      symbolTable: globalTable.toVisual(),
     };
   }
 }
