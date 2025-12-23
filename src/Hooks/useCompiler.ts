@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
-import { LanguageDriver } from "../core/LanguageDriver";
-import { CompilerError } from "../core/Errors";
-import { type UINode } from "../core/Languages/Jack/Visitors/UITreeVisitor/types";
-import { type SymbolScope } from "../core/SymbolTable/types";
+import { useEffect, useState } from 'react';
+import { LanguageDriver } from '../core/LanguageDriver';
+import { CompilerError } from '../core/Errors';
+import { type UINode } from '../core/Languages/Jack/Visitors/UITreeVisitor/types';
+import { type SymbolScope } from '../core/SymbolTable/types';
 
-export const useCompiler = (driver: LanguageDriver, files: Record<string, string>, activeFileName: string | null) => {
+export const useCompiler = (
+  driver: LanguageDriver,
+  files: Record<string, string>,
+  activeFileName: string | null,
+) => {
   const [data, setData] = useState({
     errors: {} as Record<string, CompilerError[]>,
     symbolTable: null as SymbolScope | null,
-    activeTree: null as UINode | null
+    activeTree: null as UINode | null,
   });
 
   useEffect(() => {
@@ -18,7 +22,7 @@ export const useCompiler = (driver: LanguageDriver, files: Record<string, string
       setData({
         errors: result.errors,
         symbolTable: result.symbolTable || null,
-        activeTree: (result.trees && result.trees[activeFileName]) || null
+        activeTree: (result.trees && result.trees[activeFileName]) || null,
       });
     }, 300);
     return () => clearTimeout(timer);

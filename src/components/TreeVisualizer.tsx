@@ -14,7 +14,6 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, isLast, isRoot = false }) => 
 
   return (
     <div className="relative ml-4">
-      {/* Vertical connector line for parent to children */}
       {!isRoot && (
         <div
           className="absolute left-[-13px] top-[-8px] bottom-0 w-[1px] bg-slate-700"
@@ -22,7 +21,6 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, isLast, isRoot = false }) => 
         />
       )}
 
-      {/* Horizontal connector line to the node itself */}
       {!isRoot && <div className="absolute left-[-13px] top-[14px] w-3 h-[1px] bg-slate-700" />}
 
       <div className="flex items-center group py-1 select-none cursor-pointer">

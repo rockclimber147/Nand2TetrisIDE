@@ -133,34 +133,39 @@ export const FileExplorer = ({
             const hasError = errorFiles.has(fileName);
 
             return (
-            <div
-              key={fileName}
-              onClick={() => onFileSelect(fileName)}
-              className={`
+              <div
+                key={fileName}
+                onClick={() => onFileSelect(fileName)}
+                className={`
                 group flex items-center justify-between px-4 py-1.5 cursor-pointer text-sm transition-colors
                 ${isActive ? 'bg-[#37373d] text-white' : hasError ? 'text-red-400 hover:bg-[#2a2d2e]' : 'text-slate-400 hover:bg-[#2a2d2e] hover:text-slate-200'}
               `}
-            >
-              <div className="flex items-center gap-2 truncate">
-                <FileCode size={14} className={hasError ? 'text-red-500' : isActive ? 'text-blue-400' : 'text-slate-500'} />
-                <span className="truncate">{fileName}</span>
-              </div>
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <FileCode
+                    size={14}
+                    className={
+                      hasError ? 'text-red-500' : isActive ? 'text-blue-400' : 'text-slate-500'
+                    }
+                  />
+                  <span className="truncate">{fileName}</span>
+                </div>
 
-              <div className="flex items-center gap-2 shrink-0 ml-2">
-                {/* Visual indicator for errors */}
-                {hasError && <div className="w-1.5 h-1.5 rounded-full bg-red-500" />}
-                
-                {/* DELETE BUTTON - Visible on hover */}
-                <button
-                  onClick={(e) => handleDelete(e, fileName)}
-                  className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-slate-600 rounded text-slate-400 hover:text-red-400 transition-all"
-                  title="Delete File"
-                >
-                  <Trash2 size={14} />
-                </button>
+                <div className="flex items-center gap-2 shrink-0 ml-2">
+                  {/* Visual indicator for errors */}
+                  {hasError && <div className="w-1.5 h-1.5 rounded-full bg-red-500" />}
+
+                  {/* DELETE BUTTON - Visible on hover */}
+                  <button
+                    onClick={(e) => handleDelete(e, fileName)}
+                    className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-slate-600 rounded text-slate-400 hover:text-red-400 transition-all"
+                    title="Delete File"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
-            </div>
-          );
+            );
           })
         )}
       </div>

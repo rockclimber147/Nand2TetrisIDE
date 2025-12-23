@@ -24,21 +24,27 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
   const { errors, symbolTable, activeTree } = useCompiler(driver, files, activeFileName);
 
   // Consolidated Handlers
-  const handleCodeChange = useCallback((code: string | undefined) => {
-    if (activeFileName && code !== undefined) 
-      setFiles(prev => ({ ...prev, [activeFileName]: code }));
-  }, [activeFileName]);
+  const handleCodeChange = useCallback(
+    (code: string | undefined) => {
+      if (activeFileName && code !== undefined)
+        setFiles((prev) => ({ ...prev, [activeFileName]: code }));
+    },
+    [activeFileName],
+  );
 
   const handleFileCreate = (name: string) => {
     if (files[name]) return;
-    setFiles(prev => ({ ...prev, [name]: '' }));
+    setFiles((prev) => ({ ...prev, [name]: '' }));
     setActiveFileName(name);
   };
 
-  const handleFileDelete = useCallback((name: string) => {
-    setFiles(({ [name]: _, ...rest }) => rest); // Destructuring to remove key
-    if (activeFileName === name) setActiveFileName(null);
-  }, [activeFileName]);
+  const handleFileDelete = useCallback(
+    (name: string) => {
+      setFiles(({ [name]: _, ...rest }) => rest); // Destructuring to remove key
+      if (activeFileName === name) setActiveFileName(null);
+    },
+    [activeFileName],
+  );
 
   const handleSave = async () => {
     const zip = new JSZip();
@@ -50,18 +56,22 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
     link.click();
   };
 
-  const errorFiles = new Set(Object.keys(errors).filter(k => errors[k].length > 0));
+  const errorFiles = new Set(Object.keys(errors).filter((k) => errors[k].length > 0));
 
   return (
     <div className="h-full w-full flex flex-col bg-[#1e1e1e] text-slate-300">
       <main className="flex-1 min-h-0">
         <Group className="h-full">
-          <Panel defaultSize={20} minSize={15} className="bg-[#252526]">
-            <FileExplorer 
-              files={Object.keys(files)} activeFile={activeFileName}
-              onFileSelect={setActiveFileName} onUpload={setFiles}
-              onSave={handleSave} onFileCreate={handleFileCreate}
-              onFileDelete={handleFileDelete} errorFiles={errorFiles}
+          <Panel defaultSize={200} minSize={150} className="bg-[#252526]">
+            <FileExplorer
+              files={Object.keys(files)}
+              activeFile={activeFileName}
+              onFileSelect={setActiveFileName}
+              onUpload={setFiles}
+              onSave={handleSave}
+              onFileCreate={handleFileCreate}
+              onFileDelete={handleFileDelete}
+              errorFiles={errorFiles}
             />
           </Panel>
 
@@ -70,13 +80,17 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
           <Panel className="flex flex-col min-w-0">
             {activeFileName ? (
               <>
-                {/* CONDENSED TAB BAR */}
                 <div className="flex bg-[#252526] border-b border-black h-9">
-                  {(['editor', 'tree', 'symbols'] as const).map(tab => (
-                    <button key={tab} onClick={() => setActiveTab(tab)}
+                  {(['editor', 'tree', 'symbols'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
                       className={`px-4 text-xs capitalize transition-colors border-r border-black ${
-                        activeTab === tab ? 'bg-[#1e1e1e] text-white' : 'text-slate-500 hover:text-slate-300'
-                      }`}>
+                        activeTab === tab
+                          ? 'bg-[#1e1e1e] text-white'
+                          : 'text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
                       {tab === 'tree' ? 'Tree Visualizer' : tab}
                     </button>
                   ))}
@@ -84,8 +98,13 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
 
                 <div className="flex-1 min-h-0 overflow-auto">
                   {activeTab === 'editor' && (
-                    <GenericEditor spec={languageSpec} path={activeFileName} 
-                      value={files[activeFileName]} onChange={handleCodeChange} errors={errors} />
+                    <GenericEditor
+                      spec={languageSpec}
+                      path={activeFileName}
+                      value={files[activeFileName]}
+                      onChange={handleCodeChange}
+                      errors={errors}
+                    />
                   )}
                   {activeTab === 'tree' && <ASTVisualizer root={activeTree} />}
                   {activeTab === 'symbols' && <SymbolTableVisualizer scope={symbolTable} />}

@@ -35,12 +35,10 @@ export const SymbolTableVisualizer: React.FC<SymbolTableVisualizerProps> = ({ sc
 const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) => {
   const symbolNames = Object.keys(scope.symbols);
 
-  // Determine table columns based on the first symbol's metadata keys
   const columns = symbolNames.length > 0 ? Object.keys(scope.symbols[symbolNames[0]]) : [];
 
   return (
     <div className={`mb-8 ${depth > 0 ? 'ml-6 border-l border-slate-800 pl-6' : ''}`}>
-      {/* Scope Header */}
       <div className="flex items-center justify-between mb-3 group">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-blue-500/50" />
@@ -59,7 +57,6 @@ const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) =
         </div>
       </div>
 
-      {/* Local Symbols Table */}
       {symbolNames.length > 0 ? (
         <div className="overflow-hidden rounded-md border border-slate-800 bg-[#252526] mb-6">
           <table className="w-full text-xs text-left border-collapse">
@@ -95,7 +92,6 @@ const ScopeSection = ({ scope, depth }: { scope: SymbolScope; depth: number }) =
         </div>
       )}
 
-      {/* Recursive Render of Children */}
       {Object.values(scope.children).map((childScope, idx) => (
         <ScopeSection key={`${childScope.name}-${idx}`} scope={childScope} depth={depth + 1} />
       ))}
