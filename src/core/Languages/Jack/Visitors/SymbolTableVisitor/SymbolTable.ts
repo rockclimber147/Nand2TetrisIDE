@@ -22,10 +22,8 @@ export class GlobalSymbolTable extends BaseSymbolTable {
       return `Variable '${name}' is not defined.`;
     }
 
-    // Access Rule: field variables cannot be accessed in static functions
     if (symbol.kind === SymbolKind.FIELD) {
       const sub = this.classes.get(fromClass)?.lookupSubroutine(fromSubroutine);
-      // You'll need to store the subroutine type (function/method) in the table
       if (sub?.category === JackSpec.FUNCTION) {
         return `Field variable '${name}' cannot be accessed from a static function.`;
       }

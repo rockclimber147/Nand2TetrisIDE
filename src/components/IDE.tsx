@@ -40,7 +40,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
 
   const handleFileDelete = useCallback(
     (name: string) => {
-      setFiles(({ [name]: _, ...rest }) => rest); // Destructuring to remove key
+      setFiles(({ [name]: _, ...rest }) => rest);
       if (activeFileName === name) setActiveFileName(null);
     },
     [activeFileName],
