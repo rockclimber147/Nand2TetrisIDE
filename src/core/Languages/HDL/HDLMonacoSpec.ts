@@ -50,7 +50,7 @@ export const HDLMonacoSpec: MonacoLanguageSpec = {
         [/\d+/, 'number'],
 
         [/[{}()\[\]]/, '@brackets'],
-        
+
         [
           /[.,;=:]/,
           {

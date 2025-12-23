@@ -1,13 +1,12 @@
-import { LanguageDriver, type CompilationResponse } from "../../LanguageDriver";
-import { GenericTokenizer } from "../../Tokenizer";
-import { HDLTokenMatcher } from "./HDLSpec";
-import { HDLParser } from "./Parser";
-import { CompilerError } from "../../Errors";
-import type { HDLChipNode } from "./AST";
-import { type UINode } from "../Jack/Visitors/UITreeVisitor/types";
+import { LanguageDriver, type CompilationResponse } from '../../LanguageDriver';
+import { GenericTokenizer } from '../../Tokenizer';
+import { HDLTokenMatcher } from './HDLSpec';
+import { HDLParser } from './Parser';
+import { CompilerError } from '../../Errors';
+import type { HDLChipNode } from './AST';
+import { type UINode } from '../Jack/Visitors/UITreeVisitor/types';
 
 export class HDLDriver extends LanguageDriver {
-  
   compileProject(files: Record<string, string>): CompilationResponse {
     const fileNames = Object.keys(files);
     const projectErrors: Record<string, CompilerError[]> = {};
@@ -37,10 +36,10 @@ export class HDLDriver extends LanguageDriver {
       errors: projectErrors,
       trees: trees,
       symbolTable: {
-        name: "HDL Project (Parsing Phase)",
+        name: 'HDL Project (Parsing Phase)',
         symbols: {},
-        children: {}
-      }
+        children: {},
+      },
     };
   }
 }
