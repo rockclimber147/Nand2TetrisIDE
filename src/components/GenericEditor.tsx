@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import Editor, { type Monaco } from '@monaco-editor/react';
-import { type MonacoLanguageSpec } from '../../core/Editor/types';
-import { CompilerError } from '../../core/Errors';
+import { type MonacoLanguageSpec } from '../core/Editor/types';
+import { CompilerError } from '../core/Errors';
 
 interface GenericEditorProps {
   spec: MonacoLanguageSpec;

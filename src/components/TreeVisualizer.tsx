@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, Circle } from 'lucide-react';
-import { type UINode } from '../../core/Languages/Jack/Visitors/UITreeVisitor/types';
+import { type UINode } from '../core/Languages/Jack/Visitors/UITreeVisitor/types';
 
 interface TreeNodeProps {
   node: UINode;

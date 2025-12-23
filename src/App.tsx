@@ -1,4 +1,4 @@
-import { IDE } from './components/IDE/IDE';
+import { IDE } from './components/IDE';
 import { JackMonacoSpec } from './core/Languages/Jack/JackMonacoSpec';
 import { JackDriver } from './core/Languages/Jack/JackDriver';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SymbolScope } from '../../core/SymbolTable/types';
+import type { SymbolScope } from '../core/SymbolTable/types';
 
 interface SymbolTableVisualizerProps {
   scope: SymbolScope | null;

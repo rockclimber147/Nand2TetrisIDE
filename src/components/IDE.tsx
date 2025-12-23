@@ -3,11 +3,11 @@ import { Group, Panel, Separator } from 'react-resizable-panels';
 import JSZip from 'jszip';
 import { FileExplorer } from './FileExplorer';
 import { GenericEditor } from './GenericEditor';
-import { type MonacoLanguageSpec } from '../../core/Editor/types';
-import { LanguageDriver } from '../../core/LanguageDriver';
+import { type MonacoLanguageSpec } from '../core/Editor/types';
+import { LanguageDriver } from '../core/LanguageDriver';
 import { ASTVisualizer } from './TreeVisualizer';
 import { SymbolTableVisualizer } from './SymbolTableVisualizer';
-import { useCompiler } from '../../Hooks/useCompiler';
+import { useCompiler } from '../Hooks/useCompiler';
 
 interface IDEProps {
   languageSpec: MonacoLanguageSpec;
