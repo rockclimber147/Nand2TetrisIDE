@@ -79,6 +79,19 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
     setActiveFileName(name);
   };
 
+  const handleFileDelete = useCallback((name: string) => {
+  setFiles((prev) => {
+    const updated = { ...prev };
+    delete updated[name];
+    return updated;
+  });
+
+  if (activeFileName === name) {
+    const remainingFiles = Object.keys(files).filter(f => f !== name);
+    setActiveFileName(remainingFiles.length > 0 ? remainingFiles[0] : null);
+  }
+}, [activeFileName, files]);
+
   useEffect(() => {
     if (!activeFileName || !files[activeFileName]) return;
     const result = driver.compileProject(files);
@@ -109,6 +122,7 @@ export const IDE = ({ languageSpec, driver, title }: IDEProps) => {
               onUpload={handleUpload}
               onSave={handleSave}
               onFileCreate={handleFileCreate}
+              onFileDelete={handleFileDelete}
               errorFiles={errorFiles}
             />
           </Panel>
